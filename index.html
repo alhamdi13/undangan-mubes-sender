@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem WA Alumni - RSVP Terintegrasi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen p-4 md:p-8">
+    <div class="max-w-6xl mx-auto bg-white rounded-2xl shadow-xl p-8 border-t-8 border-blue-600">
+        <header class="mb-8 border-b pb-6 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <h1 class="text-3xl font-black text-slate-900 tracking-tight">Broadcast Alumni <span class="text-blue-600">IKATP</span></h1>
+                <p class="text-slate-500 font-medium">Monitoring RSVP & Pengiriman Undangan Massal</p>
+            </div>
+            <div class="flex gap-3">
+                <div class="bg-green-100 text-green-700 px-4 py-2 rounded-xl text-xs font-bold border border-green-200">
+                    Sistem RSVP Terhubung
+                </div>
+            </div>
+        </header>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            <div class="lg:col-span-1 space-y-4">
+                <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200">
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2 tracking-widest">URL Apps Script (Otomatis)</label>
+                    <input type="url" id="urlGas" value="https://script.google.com/macros/s/AKfycbyea66hMVDpJP0t6xmR0Z_WYfRe3s2h-OeOptPmFz9v-tUAG-vWBxULjiyjErhGEgWK/exec" 
+                           class="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs font-mono text-slate-400" readonly>
+                </div>
+                
+                <div class="p-5 bg-blue-600 rounded-2xl text-white shadow-lg shadow-blue-200">
+                    <h3 class="font-bold text-sm mb-3 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Instruksi Panitia
+                    </h3>
+                    <ul class="text-[11px] space-y-2 opacity-90 leading-relaxed">
+                        <li>• Prioritaskan alumni dengan Status RSVP: <span class="font-bold underline">- (Belum Isi)</span></li>
+                        <li>• Alumni dengan status <span class="font-bold">Hadir/Tidak</span> tidak wajib dikirim pesan.</li>
+                        <li>• Jeda <span class="font-bold">30 detik</span> aktif otomatis untuk keamanan nomor Anda.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="lg:col-span-2">
+                <label class="block text-xs font-bold text-slate-500 uppercase mb-2 tracking-widest">Isi Pesan Undangan</label>
+                <textarea id="teksPesan" rows="10" 
+                          class="w-full border-2 border-slate-100 rounded-2xl p-4 focus:border-blue-500 outline-none text-sm leading-relaxed shadow-inner">Salam Alumni FT UNP. 
+
+Halo {{nama}}. Acara silaturahmi dan buka bersama kita berlangsung 7 hari lagi pada 14 Maret pukul 13.30 hingga 20.00 WIB. Agenda utama: Pembahasan Tatib & AD-ART, Tanya Jawab Calon, serta Santunan Anak Yatim.
+
+Ada DOORPRIZE dan FREE GIFT khusus yang hadir tercepat pukul 15.00 WIB! 100 pendaftar pertama GRATIS biaya.
+
+Mohon konfirmasi kehadiran Anda segera di:
+https://databasealumniftunp.netlify.app/
+
+Tutorial Konfirmasi:
+1. Login Awal: https://drive.google.com/file/d/12TrXvSG2QKb28vAqzrfAhJNNGPAFMokz/view?usp=sharing
+2. Konfirmasi Kehadiran: https://i.ibb.co.com/HLh8wkdg/undangan-sender.png
+
+Agar panitia bisa menyiapkan porsi makanan dengan akurat.</textarea>
+                <div class="flex flex-col sm:flex-row justify-between items-center mt-4 gap-4">
+                    <div class="flex items-center gap-2 text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+                        <span class="text-[10px] font-bold uppercase tracking-tighter">Auto-Tag Aktif: {{nama}}</span>
+                    </div>
+                    <button onclick="muatData()" id="btnMuat" class="w-full sm:w-auto bg-slate-900 text-white px-10 py-3 rounded-xl hover:bg-black transition-all font-bold shadow-xl">
+                        Segarkan & Sinkronkan Data
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="areaTabel" class="hidden animate-in fade-in duration-500">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-6 gap-4 border-b pb-6">
+                <div>
+                    <h2 class="text-xl font-black text-slate-800">Daftar Kontak <span id="labelRentang" class="text-blue-600"></span></h2>
+                    <div class="flex items-center gap-4 mt-2">
+                        <div class="flex items-center gap-2">
+                            <div class="w-32 h-2 bg-slate-100 rounded-full overflow-hidden">
+                                <div id="barProgres" class="h-full bg-blue-600 transition-all duration-700" style="width: 0%"></div>
+                            </div>
+                            <p id="labelStatistik" class="text-[10px] font-black text-slate-400 uppercase tracking-widest">0 / 50</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="halamanPrev()" id="btnPrev" class="px-4 py-2 bg-slate-100 rounded-xl hover:bg-slate-200 disabled:opacity-30 text-xs font-bold transition-all">Sebelumnya</button>
+                    <button onclick="halamanNext()" id="btnNext" class="px-4 py-2 bg-slate-100 rounded-xl hover:bg-slate-200 disabled:opacity-30 text-xs font-bold transition-all">Berikutnya</button>
+                </div>
+            </div>
+
+            <div id="barJeda" class="hidden mb-6 p-4 bg-red-600 text-white rounded-2xl shadow-lg shadow-red-100 text-center font-black text-xs uppercase tracking-widest">
+                Sistem Pengaman: Tunggu <span id="detikJeda">30</span> Detik...
+            </div>
+
+            <div class="overflow-hidden border border-slate-100 rounded-2xl">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-slate-50 text-slate-400 uppercase text-[10px] font-black tracking-widest">
+                        <tr>
+                            <th class="px-6 py-5">Nama Alumni</th>
+                            <th class="px-6 py-5">WhatsApp</th>
+                            <th class="px-6 py-5">Status RSVP</th>
+                            <th class="px-6 py-5">Status Kirim</th>
+                            <th class="px-6 py-5 text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="isiTabel" class="divide-y divide-slate-50">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let databaseAlumni = [];
+        let posisiData = 0;
+        const perHalaman = 20;
+        let counterSesi = 0;
+        const LIMIT_SESI = 50;
+        const WAKTU_TUNGGU = 30;
+        let kunciKeamanan = false;
+
+        function formatNomor(input) {
+            let bersih = String(input).replace(/\D/g, '');
+            if (bersih.startsWith('0')) bersih = '62' + bersih.substring(1);
+            if (bersih.startsWith('8')) bersih = '62' + bersih;
+            return bersih;
+        }
+
+        async function muatData() {
+            const url = document.getElementById('urlGas').value;
+            const btn = document.getElementById('btnMuat');
+            btn.innerText = 'SINKRONISASI...';
+            btn.disabled = true;
+
+            try {
+                const respon = await fetch(url);
+                const hasil = await respon.json();
+                
+                databaseAlumni = hasil.filter(item => {
+                    const nama = item.nama || item.Nama || item.NAMA;
+                    const hp = item.hp || item.HP || item['No HP'];
+                    return nama && hp;
+                });
+                
+                renderTabel();
+                document.getElementById('areaTabel').classList.remove('hidden');
+            } catch (err) {
+                alert('Gagal sinkronisasi data. Periksa Apps Script Anda.');
+            } finally {
+                btn.innerText = 'Segarkan & Sinkronkan Data';
+                btn.disabled = false;
+            }
+        }
+
+        function renderTabel() {
+            const wadah = document.getElementById('isiTabel');
+            const draf = document.getElementById('teksPesan').value;
+            const urlGas = document.getElementById('urlGas').value;
+            
+            wadah.innerHTML = '';
+            const dataHalaman = databaseAlumni.slice(posisiData, posisiData + perHalaman);
+            
+            document.getElementById('labelRentang').innerText = `(${posisiData + 1}-${Math.min(posisiData + perHalaman, databaseAlumni.length)} / ${databaseAlumni.length})`;
+            document.getElementById('btnPrev').disabled = posisiData === 0;
+            document.getElementById('btnNext').disabled = posisiData + perHalaman >= databaseAlumni.length;
+
+            dataHalaman.forEach(row => {
+                const nama = row.nama || row.Nama || row.NAMA;
+                const hpRaw = row.hp || row.HP || row['No HP'];
+                const statusPusat = row.Status_WA || 'Belum';
+                const statusRSVP = row.Status_RSVP || '-';
+                const hpWA = formatNomor(hpRaw);
+                const pesanFix = draf.replace(/{{nama}}/g, nama);
+                const link = `https://wa.me/${hpWA}?text=${encodeURIComponent(pesanFix)}`;
+                
+                const isSelesai = statusPusat.toLowerCase() === 'terkirim';
+                
+                let rsvpClass = "text-slate-400 bg-slate-100";
+                if (statusRSVP.toLowerCase().includes('hadir') && !statusRSVP.toLowerCase().includes('tidak')) {
+                    rsvpClass = "text-green-700 bg-green-100 border border-green-200";
+                } else if (statusRSVP.toLowerCase().includes('tidak')) {
+                    rsvpClass = "text-red-700 bg-red-100 border border-red-200";
+                }
+
+                const tr = document.createElement('tr');
+                tr.className = isSelesai ? 'bg-slate-50/50 grayscale' : 'hover:bg-blue-50/20 transition-colors';
+                tr.innerHTML = `
+                    <td class="px-6 py-5 font-bold text-slate-800">${nama}</td>
+                    <td class="px-6 py-5 font-mono text-xs text-slate-400">${hpWA}</td>
+                    <td class="px-6 py-5">
+                        <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase ${rsvpClass}">
+                            ${statusRSVP}
+                        </span>
+                    </td>
+                    <td class="px-6 py-5">
+                        <span class="text-[10px] font-black uppercase tracking-widest ${isSelesai ? 'text-green-600' : 'text-slate-300'}">
+                            ${isSelesai ? '✓ Terkirim' : '○ Antrean'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-5 text-center">
+                        <a href="${link}" target="_blank" 
+                           onclick="konfirmasiKirim(this, '${hpWA}', '${urlGas}')"
+                           class="inline-block px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${isSelesai || kunciKeamanan || counterSesi >= LIMIT_SESI ? 'bg-slate-100 text-slate-300 pointer-events-none' : 'bg-blue-600 text-white hover:bg-black shadow-lg shadow-blue-100'}">
+                           ${isSelesai ? 'Selesai' : 'Kirim WA'}
+                        </a>
+                    </td>
+                `;
+                wadah.appendChild(tr);
+            });
+        }
+
+        function konfirmasiKirim(el, hp, url) {
+            if (kunciKeamanan || counterSesi >= LIMIT_SESI) return;
+
+            el.innerText = 'MEMBUKA...';
+            el.className = 'inline-block px-6 py-2 rounded-xl text-[10px] font-black bg-slate-100 text-slate-300 pointer-events-none uppercase';
+            
+            fetch(`${url}?action=update&hp=${hp}`).catch(() => {});
+            counterSesi++;
+            updateProgres();
+            aktifkanJeda();
+        }
+
+        function updateProgres() {
+            const persen = (counterSesi / LIMIT_SESI) * 100;
+            document.getElementById('barProgres').style.width = `${persen}%`;
+            document.getElementById('labelStatistik').innerText = `${counterSesi} / ${LIMIT_SESI}`;
+        }
+
+        function aktifkanJeda() {
+            kunciKeamanan = true;
+            const bar = document.getElementById('barJeda');
+            const teksDetik = document.getElementById('detikJeda');
+            bar.classList.remove('hidden');
+            renderTabel();
+
+            let sisa = WAKTU_TUNGGU;
+            teksDetik.innerText = sisa;
+            
+            const timer = setInterval(() => {
+                sisa--;
+                teksDetik.innerText = sisa;
+                if (sisa <= 0) {
+                    clearInterval(timer);
+                    kunciKeamanan = false;
+                    bar.classList.add('hidden');
+                    if (counterSesi >= LIMIT_SESI) {
+                        bar.innerText = 'BATAS 50 PESAN TERCAPAI. HARAP ISTIRAHAT.';
+                        bar.classList.replace('bg-red-600', 'bg-slate-900');
+                        bar.classList.remove('hidden');
+                    } else {
+                        renderTabel();
+                    }
+                }
+            }, 1000);
+        }
+
+        function halamanNext() {
+            if (posisiData + perHalaman < databaseAlumni.length) {
+                posisiData += perHalaman;
+                renderTabel();
+            }
+        }
+
+        function halamanPrev() {
+            if (posisiData - perHalaman >= 0) {
+                posisiData -= perHalaman;
+                renderTabel();
+            }
+        }
+    </script>
+</body>
+</html>
