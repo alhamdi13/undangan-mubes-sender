@@ -1,253 +1,482 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IKATP - Dashboard Bukber & Mubes</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IKATP Dashboard - RSVP & Broadcast</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .smooth-scroll { -webkit-overflow-scrolling: touch; }
-        .modal-open { overflow: hidden; }
         .active-scale:active { transform: scale(0.95); }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .animate-fade { animation: fadeIn 0.4s ease-out; }
     </style>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans min-h-screen">
-    <!-- Header -->
-    <header class="bg-blue-700 text-white p-4 sticky top-0 z-40 shadow-lg md:relative md:bg-transparent md:text-slate-900 md:shadow-none md:p-8">
-        <div class="max-w-6xl mx-auto flex justify-between items-center">
+
+    <!-- Navigasi Atas -->
+    <header class="bg-blue-700 text-white p-4 sticky top-0 z-50 shadow-lg md:bg-white md:text-slate-900 md:shadow-none md:p-8">
+        <div class="max-w-6xl mx-auto flex justify-between items-center gap-4">
             <div>
-                <h1 class="text-xl md:text-3xl font-black tracking-tight uppercase italic">Dashboard <span class="md:text-blue-600">IKATP</span></h1>
-                <p class="text-[10px] md:text-sm font-medium opacity-80 md:text-slate-500">Integrasi RSVP 14 & 15 Maret 2026</p>
+                <h1 class="text-xl md:text-3xl font-black tracking-tight uppercase italic">
+                    Dashboard <span class="md:text-blue-600">IKATP</span>
+                </h1>
+                <p class="text-[10px] md:text-sm font-medium opacity-80 md:text-slate-500 uppercase tracking-widest">
+                    Manajemen Undangan 2026
+                </p>
             </div>
-            <button onclick="muatData()" class="bg-white text-blue-700 px-4 py-2 rounded-full text-[10px] font-bold shadow-md active-scale transition-all">SINKRON DATA</button>
+            <button onclick="muatData()" class="bg-white text-blue-700 px-5 py-2 rounded-full text-[10px] font-bold shadow-md active-scale transition-all border border-blue-100 md:bg-blue-600 md:text-white whitespace-nowrap">
+                SINKRON DATA
+            </button>
         </div>
     </header>
 
-    <main class="max-w-6xl mx-auto p-4 md:p-8 space-y-6">
-        <!-- Statistik -->
+    <main class="max-w-6xl mx-auto p-4 md:p-8 space-y-6 pb-32">
+
+        <!-- Dashboard Statistik Dua Hari -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Sabtu 14 Mar -->
             <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
-                <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest italic text-green-600 mb-4">SABTU, 14 MAR (BUKBER)</h3>
+                <div class="flex justify-between items-center mb-4 text-green-600">
+                    <h3 class="text-[10px] font-black uppercase tracking-widest italic">Sabtu, 14 Mar (Bukber)</h3>
+                    <span class="text-[8px] font-black bg-green-50 px-2 py-1 rounded">AGENDA 1</span>
+                </div>
                 <div class="grid grid-cols-2 gap-4">
-                    <div onclick="tampilkanDaftar('hadir14')" class="bg-green-50 p-4 rounded-2xl cursor-pointer hover:bg-green-100 transition active-scale border border-transparent hover:border-green-200">
-                        <span id="statHadir14" class="text-3xl font-black text-green-600 block leading-none">0</span>
-                        <span class="text-[9px] font-bold text-green-700 uppercase mt-1 block">Konfirmasi Hadir</span>
+                    <div onclick="tampilkanDaftar('hadir14')" class="bg-green-50 p-4 rounded-2xl cursor-pointer active-scale hover:bg-green-100 transition border border-green-100">
+                        <span id="statHadir14" class="text-3xl font-black text-green-600 block">0</span>
+                        <span class="text-[9px] font-bold text-green-700 uppercase">Hadir</span>
                     </div>
-                    <div onclick="tampilkanDaftar('tidak14')" class="bg-red-50 p-4 rounded-2xl cursor-pointer hover:bg-red-100 transition active-scale border border-transparent hover:border-red-200">
-                        <span id="statTidak14" class="text-3xl font-black text-red-500 block leading-none">0</span>
-                        <span class="text-[9px] font-bold text-red-700 uppercase mt-1 block">Berhalangan</span>
+                    <div onclick="tampilkanDaftar('tidak14')" class="bg-red-50 p-4 rounded-2xl cursor-pointer active-scale hover:bg-red-100 transition border border-red-100">
+                        <span id="statTidak14" class="text-3xl font-black text-red-500 block">0</span>
+                        <span class="text-[9px] font-bold text-red-700 uppercase">Berhalangan</span>
                     </div>
                 </div>
             </div>
 
+            <!-- Minggu 15 Mar -->
             <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
-                <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest italic text-blue-600 mb-4">MINGGU, 15 MAR (MUBES)</h3>
+                <div class="flex justify-between items-center mb-4 text-blue-600">
+                    <h3 class="text-[10px] font-black uppercase tracking-widest italic">Minggu, 15 Mar (Mubes)</h3>
+                    <span class="text-[8px] font-black bg-blue-50 px-2 py-1 rounded">AGENDA 2</span>
+                </div>
                 <div class="grid grid-cols-2 gap-4">
-                    <div onclick="tampilkanDaftar('hadir15')" class="bg-blue-50 p-4 rounded-2xl cursor-pointer hover:bg-blue-100 transition active-scale border border-transparent hover:border-blue-200">
-                        <span id="statHadir15" class="text-3xl font-black text-blue-600 block leading-none">0</span>
-                        <span class="text-[9px] font-bold text-blue-700 uppercase mt-1 block">Konfirmasi Hadir</span>
+                    <div onclick="tampilkanDaftar('hadir15')" class="bg-blue-50 p-4 rounded-2xl cursor-pointer active-scale hover:bg-blue-100 transition border border-blue-100">
+                        <span id="statHadir15" class="text-3xl font-black text-blue-600 block">0</span>
+                        <span class="text-[9px] font-bold text-blue-700 uppercase">Hadir</span>
                     </div>
-                    <div onclick="tampilkanDaftar('tidak15')" class="bg-red-50 p-4 rounded-2xl cursor-pointer hover:bg-red-100 transition active-scale border border-transparent hover:border-red-200">
-                        <span id="statTidak15" class="text-3xl font-black text-red-500 block leading-none">0</span>
-                        <span class="text-[9px] font-bold text-red-700 uppercase mt-1 block">Berhalangan</span>
+                    <div onclick="tampilkanDaftar('tidak15')" class="bg-red-50 p-4 rounded-2xl cursor-pointer active-scale hover:bg-red-100 transition border border-red-100">
+                        <span id="statTidak15" class="text-3xl font-black text-red-500 block">0</span>
+                        <span class="text-[9px] font-bold text-red-700 uppercase">Berhalangan</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Draft & Belum Respon -->
+        <!-- Section Pengiriman -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div class="lg:col-span-2 bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
-                <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Draft Pesan Undangan</label>
-                <textarea id="teksPesan" rows="6" class="w-full border-none bg-slate-50 rounded-2xl p-4 text-sm leading-relaxed mb-4 focus:ring-2 focus:ring-blue-500 outline-none">Salam Alumni FT UNP. Halo {{nama}}.
+                <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Draf Pesan</label>
+                <textarea id="teksPesan" rows="8" class="w-full bg-slate-50 border-none rounded-2xl p-4 text-sm leading-relaxed mb-4 focus:ring-2 focus:ring-blue-500 outline-none">Salam Alumni FT UNP. Halo {{nama}}.
 
 Kami mengundang Kamu pada rangkaian acara IKATP:
-1. Sabtu, 14 Mar (13.30-20.00): Bukber & Santunan.
-2. Minggu, 15 Mar (08.00-Selesai): Mubes.
 
-Konfirmasi kehadiran Kamu segera di:
+1. Sabtu, 14 Mar (13.30-20.00): Bukber & Santunan.
+2. Minggu, 15 Mar (08.00-Selesai): Musyawarah Besar (Mubes).
+
+Konfirmasi kehadiran Kamu di:
 https://databasealumniftunp.netlify.app/
 
-Tutorial Login: https://drive.google.com/file/d/12TrXvSG2QKb28vAqzrfAhJNNGPAFMokz/view?usp=sharing
-Tutorial RSVP: https://i.ibb.co.com/HLh8wkdg/undangan-sender.png</textarea>
-                <button onclick="muatData()" id="btnMuat" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold active-scale transition shadow-xl uppercase tracking-wider text-xs">PROSES & URUTKAN PRIORITAS</button>
+Tutorial Login:
+https://drive.google.com/file/d/12TrXvSG2QKb28vAqzrfAhJNNGPAFMokz/view?usp=sharing
+
+Tutorial RSVP:
+https://i.ibb.co.com/HLh8wkdg/undangan-sender.png</textarea>
+
+                <button onclick="muatData()" id="btnMuat" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-black active-scale transition shadow-xl uppercase text-xs tracking-widest">
+                    Refresh Antrean Pengiriman
+                </button>
             </div>
-            
+
             <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 flex flex-col justify-center text-center">
-                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 text-blue-600">Belum Ada Respon</span>
-                <span id="statBelum" class="text-5xl font-black text-slate-900">0</span>
+                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Belum Ada Respon</span>
+                <span id="statBelum" class="text-5xl font-black text-blue-600">0</span>
+                <p class="text-[9px] font-bold text-slate-400 mt-2 uppercase tracking-tighter italic">Fokus pengiriman pada target ini</p>
             </div>
         </div>
 
-        <!-- Tabel Monitoring -->
+        <!-- Daftar Penerima -->
         <div id="areaTabel" class="hidden space-y-4 animate-fade">
-            <div id="barJeda" class="hidden p-4 bg-red-600 text-white rounded-2xl shadow-lg text-center font-black text-[10px] uppercase tracking-widest sticky top-[72px] md:relative md:top-0 z-30">PENGAMAN: TUNGGU <span id="detikJeda">30</span> DETIK...</div>
-            <div id="isiTabelMobile" class="space-y-3 pb-24"></div>
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 sticky top-[72px] md:relative md:top-0 z-40 flex justify-between items-center gap-4">
+                <div class="flex items-center gap-3 min-w-0">
+                    <span id="labelStatistik" class="text-[10px] font-black text-blue-600 bg-blue-50 px-3 py-1.5 rounded-lg whitespace-nowrap uppercase tracking-tighter">
+                        Sesi: 0 / 50
+                    </span>
+                    <div class="w-24 md:w-48 h-2 bg-slate-100 rounded-full overflow-hidden">
+                        <div id="barProgres" class="h-full bg-blue-600 transition-all duration-700" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="halamanPrev()" class="px-4 py-2 bg-slate-100 rounded-xl text-[10px] font-black active-scale">PREV</button>
+                    <button onclick="halamanNext()" class="px-4 py-2 bg-slate-100 rounded-xl text-[10px] font-black active-scale">NEXT</button>
+                </div>
+            </div>
+
+            <!-- Jeda Keamanan -->
+            <div id="barJeda" class="hidden p-4 bg-red-600 text-white rounded-2xl shadow-lg text-center font-black text-[10px] uppercase tracking-widest sticky top-[130px] md:relative md:top-0 z-30 animate-pulse">
+                Keamanan Akun: Tunggu <span id="detikJeda">30</span> Detik...
+            </div>
+
+            <!-- List Card Mobile -->
+            <div id="isiTabelMobile" class="space-y-3"></div>
         </div>
     </main>
 
-    <!-- Modal Daftar -->
-    <div id="modalDaftar" class="fixed inset-0 bg-slate-900/80 hidden flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-        <div class="bg-white rounded-[32px] w-full max-w-xl max-h-[80vh] flex flex-col shadow-2xl overflow-hidden">
+    <!-- Modal Daftar RSVP -->
+    <div id="modalDaftar" class="fixed inset-0 bg-slate-900/80 hidden items-center justify-center z-[100] p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-[40px] w-full max-w-lg max-h-[80vh] flex flex-col shadow-2xl overflow-hidden">
             <div class="p-8 border-b flex justify-between items-center">
-                <h3 id="judulModal" class="font-black text-slate-900 uppercase text-xs tracking-tight">Daftar Alumni</h3>
-                <button onclick="tutupModal()" class="text-slate-400 p-2 active-scale"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
+                <h3 id="judulModal" class="font-black text-slate-900 uppercase text-xs tracking-widest italic">Daftar Konfirmasi</h3>
+                <button onclick="tutupModal()" class="text-slate-400 p-2 active-scale">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
             </div>
-            <div class="p-6 overflow-y-auto flex-1 bg-slate-50"><ul id="listNama" class="space-y-2"></ul></div>
-            <div class="p-6 bg-white"><button onclick="tutupModal()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold text-xs active-scale uppercase tracking-widest">Tutup</button></div>
+            <div class="p-6 overflow-y-auto smooth-scroll flex-1 bg-slate-50">
+                <ul id="listNama" class="space-y-2"></ul>
+            </div>
+            <div class="p-6 bg-white border-t">
+                <button onclick="tutupModal()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-black text-xs active-scale uppercase tracking-widest">
+                    Tutup Jendela
+                </button>
+            </div>
         </div>
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbyk9tk-6_xk5S36WWLmfxK4ofCB8QPHT1mnZEsIO-_Sb_rPCcTgBxKellS6t81p1HwL/exec";
+        // Backend URL baru
+        const API_URL = "https://script.google.com/macros/s/AKfycbzyyqR0-U1MiPua7nM1pNCYJExCkkziKDcioEFYVH5OVKc-f_pjiVfbVBtY6grMn70o/exec";
+
         let databaseAlumni = [];
+        let posisiData = 0;
+        const perHalaman = 20;
         let counterSesi = 0;
         const LIMIT_SESI = 50;
         const WAKTU_TUNGGU = 30;
         let kunciKeamanan = false;
 
         function formatNomor(input) {
-            let bersih = String(input || '').replace(/\D/g, '');
-            if (bersih.startsWith('0')) bersih = '62' + bersih.substring(1);
-            else if (bersih.startsWith('8')) bersih = '62' + bersih;
+            let bersih = String(input || "").replace(/\D/g, "");
+            if (!bersih) return "";
+            if (bersih.startsWith("0")) bersih = "62" + bersih.substring(1);
+            else if (bersih.startsWith("8")) bersih = "62" + bersih;
             return bersih;
         }
 
+        function escapeHtml(teks) {
+            return String(teks || "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function normalisasiRSVP(nilai) {
+            const v = String(nilai || "-").trim().toLowerCase();
+
+            if (!v || v === "-") return "belum";
+
+            if (
+                v.includes("berhalangan") ||
+                v.includes("tidak hadir") ||
+                v.includes("tdk hadir") ||
+                v.includes("absen") ||
+                v.includes("tidak bisa") ||
+                v === "tidak"
+            ) return "tidak";
+
+            if (v.includes("hadir")) return "hadir";
+
+            return "lainnya";
+        }
+
+        function ambilNama(item) {
+            return item.Nama || item.nama || item["Nama Lengkap"] || item["nama lengkap"] || "Alumni";
+        }
+
+        function ambilHP(item) {
+            return formatNomor(item.HP || item.hp || item["No HP"] || item["no hp"] || item["Nomor HP"] || "");
+        }
+
+        function ambilStatusWA(item) {
+            return String(item.Status_WA || item.status_wa || item["Status WA"] || item["status wa"] || "Antrean").trim();
+        }
+
+        function getBadgeClass(statusNormal, tipeHari) {
+            if (statusNormal === "hadir") {
+                return tipeHari === "14"
+                    ? "bg-green-100 text-green-700"
+                    : "bg-blue-100 text-blue-700";
+            }
+            if (statusNormal === "tidak") {
+                return "bg-red-100 text-red-700";
+            }
+            if (statusNormal === "belum") {
+                return "bg-slate-100 text-slate-400";
+            }
+            return "bg-amber-100 text-amber-700";
+        }
+
+        function labelStatus(statusAsli) {
+            const s = normalisasiRSVP(statusAsli);
+            if (s === "hadir") return "Hadir";
+            if (s === "tidak") return "Berhalangan";
+            if (s === "belum") return "-";
+            return String(statusAsli || "-");
+        }
+
         async function muatData() {
-            const btn = document.getElementById('btnMuat');
-            btn.innerText = 'MENYINKRONKAN...';
+            const btn = document.getElementById("btnMuat");
+            btn.innerText = "SINKRONISASI...";
             btn.disabled = true;
             document.body.style.opacity = "0.7";
 
             try {
                 const respon = await fetch(API_URL);
                 const hasil = await respon.json();
-                
-                // PROTEKSI: Cek jika hasil adalah error dari GAS
+
                 if (hasil.error) throw new Error(hasil.error);
+                if (!Array.isArray(hasil)) throw new Error("Format data backend tidak valid.");
 
-                // PROTEKSI: Pastikan hasil adalah Array
-                if (!Array.isArray(hasil)) throw new Error("Format data salah. Pastikan Apps Script di-deploy sebagai 'Anyone'.");
-                
                 let h14 = 0, t14 = 0, h15 = 0, t15 = 0, belum = 0;
+
                 hasil.forEach(item => {
-                    const r14 = (item.RSVP_14 || '-').toLowerCase();
-                    const r15 = (item.RSVP_15 || '-').toLowerCase();
-                    if (r14.includes('hadir') && !r14.includes('tidak')) h14++; else if (r14.includes('tidak')) t14++;
-                    if (r15.includes('hadir') && !r15.includes('tidak')) h15++; else if (r15.includes('tidak')) t15++;
-                    if (r14 === '-' && r15 === '-') belum++;
+                    const r14 = normalisasiRSVP(item.RSVP_14);
+                    const r15 = normalisasiRSVP(item.RSVP_15);
+
+                    if (r14 === "hadir") h14++;
+                    else if (r14 === "tidak") t14++;
+
+                    if (r15 === "hadir") h15++;
+                    else if (r15 === "tidak") t15++;
+
+                    if (r14 === "belum" && r15 === "belum") belum++;
                 });
 
-                document.getElementById('statHadir14').innerText = h14;
-                document.getElementById('statTidak14').innerText = t14;
-                document.getElementById('statHadir15').innerText = h15;
-                document.getElementById('statTidak15').innerText = t15;
-                document.getElementById('statBelum').innerText = belum;
+                document.getElementById("statHadir14").innerText = h14;
+                document.getElementById("statTidak14").innerText = t14;
+                document.getElementById("statHadir15").innerText = h15;
+                document.getElementById("statTidak15").innerText = t15;
+                document.getElementById("statBelum").innerText = belum;
 
-                // Sort: Prioritas yang belum isi RSVP
                 databaseAlumni = hasil.sort((a, b) => {
-                    const rA = (a.RSVP_14 === '-' && a.RSVP_15 === '-');
-                    const rB = (b.RSVP_14 === '-' && b.RSVP_15 === '-');
-                    return rA === rB ? 0 : rA ? -1 : 1;
+                    const aBelum = normalisasiRSVP(a.RSVP_14) === "belum" && normalisasiRSVP(a.RSVP_15) === "belum";
+                    const bBelum = normalisasiRSVP(b.RSVP_14) === "belum" && normalisasiRSVP(b.RSVP_15) === "belum";
+
+                    const aSent = ambilStatusWA(a).toLowerCase() === "terkirim";
+                    const bSent = ambilStatusWA(b).toLowerCase() === "terkirim";
+
+                    if (aBelum && !bBelum) return -1;
+                    if (!aBelum && bBelum) return 1;
+                    if (!aSent && bSent) return -1;
+                    if (aSent && !bSent) return 1;
+
+                    return ambilNama(a).localeCompare(ambilNama(b), "id");
                 });
 
+                posisiData = 0;
                 renderTabel();
-                document.getElementById('areaTabel').classList.remove('hidden');
-            } catch (err) { 
-                alert("Gagal memuat data: " + err.message);
+                document.getElementById("areaTabel").classList.remove("hidden");
+            } catch (err) {
                 console.error(err);
-            } finally { 
-                btn.innerText = 'PROSES & URUTKAN PRIORITAS'; 
+                alert("Gagal memuat data: " + err.message);
+            } finally {
+                btn.innerText = "Refresh Antrean Pengiriman";
                 btn.disabled = false;
                 document.body.style.opacity = "1";
             }
         }
 
         function renderTabel() {
-            const wadah = document.getElementById('isiTabelMobile');
-            const draf = document.getElementById('teksPesan').value;
-            wadah.innerHTML = '';
-            
-            // Batasi tampilan hanya 50 untuk performa mobile
-            databaseAlumni.slice(0, 50).forEach(row => {
-                const nama = row.nama || row.Nama || 'Tanpa Nama';
-                const r14 = row.RSVP_14 || '-';
-                const r15 = row.RSVP_15 || '-';
-                const statusWA = (row.Status_WA || 'Antrean').toLowerCase();
-                const isSent = statusWA === 'terkirim';
-                const hp = formatNomor(row.hp || row.HP || row['No HP']);
-                
-                const card = document.createElement('div');
-                card.className = `p-5 rounded-[32px] border transition-all ${isSent ? 'bg-slate-50 opacity-60 grayscale' : 'bg-white shadow-sm border-slate-200'}`;
+            const wadah = document.getElementById("isiTabelMobile");
+            const draf = document.getElementById("teksPesan").value;
+            wadah.innerHTML = "";
+
+            const dataHalaman = databaseAlumni.slice(posisiData, posisiData + perHalaman);
+
+            if (dataHalaman.length === 0) {
+                wadah.innerHTML = `
+                    <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 text-center text-sm text-slate-500">
+                        Tidak ada data untuk ditampilkan.
+                    </div>
+                `;
+                return;
+            }
+
+            dataHalaman.forEach(row => {
+                const nama = ambilNama(row);
+                const hp = ambilHP(row);
+                const r14Asli = row.RSVP_14 || "-";
+                const r15Asli = row.RSVP_15 || "-";
+                const r14 = normalisasiRSVP(r14Asli);
+                const r15 = normalisasiRSVP(r15Asli);
+
+                const statusWA = ambilStatusWA(row);
+                const isSent = statusWA.toLowerCase() === "terkirim";
+
+                const disabledSend = isSent || kunciKeamanan || counterSesi >= LIMIT_SESI || !hp;
+                const pesan = encodeURIComponent(draf.replace(/{{nama}}/g, nama));
+
+                const card = document.createElement("div");
+                card.className = `p-5 rounded-[32px] border transition-all ${
+                    isSent
+                        ? "bg-slate-50 opacity-60 grayscale"
+                        : "bg-white shadow-sm border-slate-200"
+                }`;
+
                 card.innerHTML = `
-                    <div class="flex justify-between items-start mb-4">
-                        <h4 class="font-black text-slate-800 text-sm leading-tight uppercase">${nama}</h4>
+                    <div class="flex justify-between items-start mb-4 gap-4">
+                        <div class="max-w-[65%]">
+                            <h4 class="font-black text-slate-800 text-sm leading-tight uppercase italic">${escapeHtml(nama)}</h4>
+                            <p class="text-[9px] font-mono text-slate-400 mt-1 tracking-widest">${escapeHtml(hp || "-")}</p>
+                        </div>
                         <div class="flex flex-col gap-1 items-end">
-                            <span class="text-[7px] font-black px-2 py-0.5 rounded uppercase ${r14.includes('hadir') ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-400'}">SAB: ${r14}</span>
-                            <span class="text-[7px] font-black px-2 py-0.5 rounded uppercase ${r15.includes('hadir') ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-400'}">MIN: ${r15}</span>
+                            <span class="text-[7px] font-black px-2 py-0.5 rounded uppercase ${getBadgeClass(r14, "14")}">
+                                Sab: ${escapeHtml(labelStatus(r14Asli))}
+                            </span>
+                            <span class="text-[7px] font-black px-2 py-0.5 rounded uppercase ${getBadgeClass(r15, "15")}">
+                                Min: ${escapeHtml(labelStatus(r15Asli))}
+                            </span>
                         </div>
                     </div>
+
                     <div class="flex justify-between items-center gap-4">
-                        <span class="text-[8px] font-black ${isSent ? 'text-green-600' : 'text-slate-300'} uppercase tracking-widest">${statusWA}</span>
-                        <a href="https://wa.me/${hp}?text=${encodeURIComponent(draf.replace(/{{nama}}/g, nama))}" target="_blank" onclick="konfirmasiKirim(this, '${hp}')" 
-                           class="flex-1 text-center py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all shadow-md active-scale ${isSent || kunciKeamanan || counterSesi >= LIMIT_SESI ? 'bg-slate-100 text-slate-300 pointer-events-none' : 'bg-blue-600 text-white'}">
-                           ${isSent ? 'SELESAI' : 'KIRIM WA'}
+                        <span class="text-[8px] font-black tracking-widest ${isSent ? "text-green-600" : "text-slate-300"} uppercase">
+                            ${escapeHtml(statusWA)}
+                        </span>
+
+                        <a href="${disabledSend ? "#" : `https://wa.me/${hp}?text=${pesan}`}"
+                           target="_blank"
+                           ${disabledSend ? "" : `onclick="konfirmasiKirim(this, '${hp}')"` }
+                           class="flex-1 text-center py-3 rounded-2xl text-[10px] font-black shadow-md active-scale transition-all ${
+                               disabledSend
+                                   ? "bg-slate-100 text-slate-300 pointer-events-none"
+                                   : "bg-blue-600 text-white"
+                           }">
+                           KIRIM WA
                         </a>
                     </div>
                 `;
+
                 wadah.appendChild(card);
             });
         }
 
         function konfirmasiKirim(el, hp) {
             if (kunciKeamanan || counterSesi >= LIMIT_SESI) return;
-            fetch(`${API_URL}?action=update&hp=${hp}`).catch(() => {});
+
+            fetch(`${API_URL}?action=update&hp=${encodeURIComponent(hp)}`).catch(() => {});
+
             counterSesi++;
+            document.getElementById("labelStatistik").innerText = `Sesi: ${counterSesi} / ${LIMIT_SESI}`;
+            document.getElementById("barProgres").style.width = `${(counterSesi / LIMIT_SESI) * 100}%`;
+
             aktifkanJeda();
         }
 
         function aktifkanJeda() {
             kunciKeamanan = true;
-            const bar = document.getElementById('barJeda');
-            const teks = document.getElementById('detikJeda');
-            bar.classList.remove('hidden');
             renderTabel();
+
             let sisa = WAKTU_TUNGGU;
+            const bar = document.getElementById("barJeda");
+            const teks = document.getElementById("detikJeda");
+            teks.innerText = sisa;
+            bar.classList.remove("hidden");
+
             const timer = setInterval(() => {
-                sisa--; teks.innerText = sisa;
-                if (sisa <= 0) { 
-                    clearInterval(timer); 
-                    kunciKeamanan = false; 
-                    bar.classList.add('hidden'); 
-                    muatData(); 
+                sisa--;
+                teks.innerText = sisa;
+
+                if (sisa <= 0) {
+                    clearInterval(timer);
+                    kunciKeamanan = false;
+                    bar.classList.add("hidden");
+                    muatData();
                 }
             }, 1000);
         }
 
         function tampilkanDaftar(tipe) {
-            const list = document.getElementById('listNama');
-            list.innerHTML = '';
+            const list = document.getElementById("listNama");
+            const judul = document.getElementById("judulModal");
+            list.innerHTML = "";
+
+            const mapJudul = {
+                hadir14: "Daftar Hadir - 14 Maret",
+                tidak14: "Daftar Berhalangan - 14 Maret",
+                hadir15: "Daftar Hadir - 15 Maret",
+                tidak15: "Daftar Berhalangan - 15 Maret"
+            };
+            judul.innerText = mapJudul[tipe] || "Daftar Konfirmasi";
+
             const filter = databaseAlumni.filter(item => {
-                const r14 = (item.RSVP_14 || '-').toLowerCase();
-                const r15 = (item.RSVP_15 || '-').toLowerCase();
-                if (tipe === 'hadir14') return r14.includes('hadir') && !r14.includes('tidak');
-                if (tipe === 'tidak14') return r14.includes('tidak');
-                if (tipe === 'hadir15') return r15.includes('hadir') && !r15.includes('tidak');
-                if (tipe === 'tidak15') return r15.includes('tidak');
+                const r14 = normalisasiRSVP(item.RSVP_14);
+                const r15 = normalisasiRSVP(item.RSVP_15);
+
+                if (tipe === "hadir14") return r14 === "hadir";
+                if (tipe === "tidak14") return r14 === "tidak";
+                if (tipe === "hadir15") return r15 === "hadir";
+                if (tipe === "tidak15") return r15 === "tidak";
                 return false;
             });
-            filter.forEach((it, i) => {
-                const li = document.createElement('li');
-                li.className = "p-4 bg-white rounded-2xl text-[11px] font-bold border border-slate-100 shadow-sm flex items-center gap-3";
-                li.innerHTML = `<span class="bg-slate-100 w-6 h-6 rounded-full flex items-center justify-center text-[9px]">${i+1}</span> ${it.nama || it.Nama || 'Alumni'}`;
-                list.appendChild(li);
-            });
-            document.getElementById('modalDaftar').classList.remove('hidden');
+
+            if (filter.length === 0) {
+                list.innerHTML = `
+                    <li class="p-4 bg-white rounded-2xl text-[11px] font-bold border border-slate-100 shadow-sm">
+                        Tidak ada data.
+                    </li>
+                `;
+            } else {
+                filter.forEach((it, i) => {
+                    const li = document.createElement("li");
+                    li.className = "p-4 bg-white rounded-2xl text-[11px] font-bold border border-slate-100 shadow-sm flex items-center gap-3";
+                    li.innerHTML = `
+                        <span class="bg-slate-100 w-6 h-6 rounded-full flex items-center justify-center text-[9px]">${i + 1}</span>
+                        ${escapeHtml(ambilNama(it))}
+                    `;
+                    list.appendChild(li);
+                });
+            }
+
+            const modal = document.getElementById("modalDaftar");
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
         }
 
-        function tutupModal() { document.getElementById('modalDaftar').classList.add('hidden'); }
+        function tutupModal() {
+            const modal = document.getElementById("modalDaftar");
+            modal.classList.add("hidden");
+            modal.classList.remove("flex");
+        }
+
+        function halamanNext() {
+            if (posisiData + perHalaman < databaseAlumni.length) {
+                posisiData += perHalaman;
+                renderTabel();
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+        }
+
+        function halamanPrev() {
+            if (posisiData > 0) {
+                posisiData -= perHalaman;
+                renderTabel();
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+        }
+
         window.onload = muatData;
     </script>
 </body>
