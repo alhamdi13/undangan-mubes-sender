@@ -3,128 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IKATP - Broadcast Alumni</title>
+    <title>IKATP - Dashboard Bukber & Mubes</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .loading-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
-        /* Mengoptimalkan scroll pada iOS */
         .smooth-scroll { -webkit-overflow-scrolling: touch; }
+        .modal-open { overflow: hidden; }
     </style>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans min-h-screen">
-    <!-- Header Fixed di Mobile -->
     <header class="bg-blue-700 text-white p-4 sticky top-0 z-40 shadow-lg md:relative md:bg-transparent md:text-slate-900 md:shadow-none md:p-8">
         <div class="max-w-6xl mx-auto flex justify-between items-center">
             <div>
-                <h1 class="text-xl md:text-3xl font-black tracking-tight uppercase">Broadcast <span class="md:text-blue-600">IKATP</span></h1>
-                <p class="text-[10px] md:text-sm font-medium opacity-80 md:opacity-100 md:text-slate-500">Monitoring RSVP & Undangan Massal</p>
+                <h1 class="text-xl md:text-3xl font-black tracking-tight uppercase">Dashboard <span class="md:text-blue-600">IKATP</span></h1>
+                <p class="text-[10px] md:text-sm font-medium opacity-80 md:text-slate-500">Mubes & Buka Bersama 2026</p>
             </div>
-            <div id="badgeKoneksi" class="bg-green-500 text-white px-3 py-1 rounded-full text-[10px] font-bold md:hidden">
-                RSVP AKTIF
-            </div>
+            <div class="hidden md:block bg-green-500 text-white px-4 py-1 rounded-full text-[10px] font-bold">KONEKSI RSVP AKTIF</div>
         </div>
     </header>
 
     <main class="max-w-6xl mx-auto p-4 md:p-8 space-y-6">
-        <!-- Section Input & Instruksi -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="space-y-4">
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
-                    <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">URL Apps Script</label>
-                    <input type="url" id="urlGas" value="https://script.google.com/macros/s/AKfycbyea66hMVDpJP0t6xmR0Z_WYfRe3s2h-OeOptPmFz9v-tUAG-vWBxULjiyjErhGEgWK/exec" 
-                           class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-[10px] font-mono text-slate-400 focus:outline-none" readonly>
+        <!-- Statistik Dual Agenda -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Bukber 14 Mar -->
+            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest">Sabtu, 14 Mar (Bukber)</h3>
+                    <span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold">Katering</span>
                 </div>
-                
-                <div class="hidden md:block p-5 bg-blue-600 rounded-2xl text-white shadow-xl shadow-blue-100">
-                    <h3 class="font-bold text-sm mb-3 flex items-center gap-2">Petunjuk Tim</h3>
-                    <ul class="text-[11px] space-y-2 opacity-90 leading-relaxed">
-                        <li>• Prioritas: Alumni status <span class="font-bold">- (Belum RSVP)</span>.</li>
-                        <li>• Jeda <span class="font-bold">30 detik</span> aktif otomatis demi keamanan.</li>
-                        <li>• Batas <span class="font-bold">50 pesan</span> per sesi pengiriman.</li>
-                    </ul>
+                <div class="grid grid-cols-2 gap-4">
+                    <div onclick="tampilkanDaftarRSVP('hadir14')" class="bg-slate-50 p-4 rounded-2xl cursor-pointer hover:bg-green-50 transition">
+                        <span id="statHadir14" class="text-3xl font-black text-green-600 block">0</span>
+                        <span class="text-[9px] font-bold text-slate-400 uppercase">Hadir</span>
+                    </div>
+                    <div onclick="tampilkanDaftarRSVP('tidak14')" class="bg-slate-50 p-4 rounded-2xl cursor-pointer hover:bg-red-50 transition">
+                        <span id="statTidak14" class="text-3xl font-black text-red-500 block">0</span>
+                        <span class="text-[9px] font-bold text-slate-400 uppercase">Berhalangan</span>
+                    </div>
                 </div>
             </div>
-
-            <div class="lg:col-span-2 bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
-                <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Draft Pesan</label>
-                <textarea id="teksPesan" rows="6" 
-                          class="w-full border border-slate-200 rounded-xl p-4 focus:ring-2 focus:ring-blue-500 outline-none text-sm leading-relaxed mb-4">Salam Alumni FT UNP. 
-
-Halo {{nama}}. Acara silaturahmi dan buka bersama kita berlangsung 7 hari lagi pada 14 Maret pukul 13.30 hingga 20.00 WIB. Agenda utama: Pembahasan Tatib & AD-ART, Tanya Jawab Calon, serta Santunan Anak Yatim.
-
-Ada DOORPRIZE dan FREE GIFT khusus yang hadir tercepat pukul 15.00 WIB! 100 pendaftar pertama GRATIS biaya.
-
-Mohon konfirmasi kehadiran Anda segera di:
-https://databasealumniftunp.netlify.app/
-
-Tutorial Konfirmasi:
-1. Login Awal: https://drive.google.com/file/d/12TrXvSG2QKb28vAqzrfAhJNNGPAFMokz/view?usp=sharing
-2. Konfirmasi Kehadiran: https://i.ibb.co.com/HLh8wkdg/undangan-sender.png
-
-Agar panitia bisa menyiapkan porsi makanan dengan akurat.</textarea>
-                <button onclick="muatData()" id="btnMuat" class="w-full bg-slate-900 text-white py-4 rounded-xl hover:bg-black transition-all font-bold text-sm shadow-lg active:scale-95">
-                    SINKRONKAN DATA ALUMNI
-                </button>
+            <!-- Mubes 15 Mar -->
+            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest">Minggu, 15 Mar (Mubes)</h3>
+                    <span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-[10px] font-bold">Rapat</span>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div onclick="tampilkanDaftarRSVP('hadir15')" class="bg-slate-50 p-4 rounded-2xl cursor-pointer hover:bg-blue-50 transition">
+                        <span id="statHadir15" class="text-3xl font-black text-blue-600 block">0</span>
+                        <span class="text-[9px] font-bold text-slate-400 uppercase">Hadir</span>
+                    </div>
+                    <div onclick="tampilkanDaftarRSVP('tidak15')" class="bg-slate-50 p-4 rounded-2xl cursor-pointer hover:bg-red-50 transition">
+                        <span id="statTidak15" class="text-3xl font-black text-red-500 block">0</span>
+                        <span class="text-[9px] font-bold text-slate-400 uppercase">Berhalangan</span>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Progres & Navigasi -->
+        <!-- Input & Pesan -->
+        <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
+            <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Draft Pesan (14 & 15 Maret)</label>
+            <textarea id="teksPesan" rows="8" class="w-full border border-slate-100 bg-slate-50 rounded-2xl p-4 text-sm leading-relaxed mb-4">Salam Alumni FT UNP. Halo {{nama}}.
+
+Kami mengundang Anda pada rangkaian acara IKATP:
+1. Sabtu, 14 Mar (13.30-20.00): Bukber, Tanya Jawab Panelis, & Santunan.
+2. Minggu, 15 Mar (08.00-Selesai): Musyawarah Besar (Mubes).
+
+Konfirmasi kehadiran Anda segera di:
+https://databasealumniftunp.netlify.app/
+
+Tutorial Login: https://drive.google.com/file/d/12TrXvSG2QKb28vAqzrfAhJNNGPAFMokz/view?usp=sharing
+Tutorial RSVP: https://i.ibb.co.com/HLh8wkdg/undangan-sender.png
+
+Data Anda sangat penting untuk menghitung porsi makanan katering.</textarea>
+            <button onclick="muatData()" id="btnMuat" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold active:scale-95 transition shadow-xl">SEGARKAN DATA & HITUNG RSVP</button>
+        </div>
+
+        <!-- Daftar & Kontrol -->
         <div id="areaTabel" class="hidden space-y-4">
-            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 sticky top-[72px] md:relative md:top-0 z-30">
-                <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-                    <div class="w-full md:w-auto">
-                        <div class="flex justify-between md:justify-start items-center gap-4 mb-2">
-                            <h2 class="font-bold text-slate-800 text-sm">Progres Sesi Ini</h2>
-                            <span id="labelStatistik" class="text-[10px] font-black text-blue-600 bg-blue-50 px-2 py-1 rounded">0 / 50</span>
-                        </div>
-                        <div class="w-full md:w-64 h-2 bg-slate-100 rounded-full overflow-hidden">
-                            <div id="barProgres" class="h-full bg-blue-600 transition-all duration-700" style="width: 0%"></div>
-                        </div>
+            <div class="bg-white p-4 rounded-2xl shadow-sm sticky top-[72px] md:relative md:top-0 z-30 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-4">
+                    <span id="labelStatistik" class="text-[10px] font-black text-blue-600 bg-blue-50 px-3 py-2 rounded-xl">SESI: 0 / 50</span>
+                    <div class="w-32 h-2 bg-slate-100 rounded-full overflow-hidden">
+                        <div id="barProgres" class="h-full bg-blue-600 transition-all duration-700" style="width: 0%"></div>
                     </div>
-                    <div class="flex items-center w-full md:w-auto gap-2">
-                        <button onclick="halamanPrev()" id="btnPrev" class="flex-1 md:flex-none px-4 py-2 bg-slate-100 rounded-xl text-xs font-bold active:bg-slate-200">KEMBALI</button>
-                        <span id="labelRentang" class="text-[10px] font-bold text-slate-500 min-w-[80px] text-center">...</span>
-                        <button onclick="halamanNext()" id="btnNext" class="flex-1 md:flex-none px-4 py-2 bg-slate-100 rounded-xl text-xs font-bold active:bg-slate-200">LANJUT</button>
-                    </div>
+                </div>
+                <div class="flex gap-2 w-full md:w-auto">
+                    <button onclick="halamanPrev()" class="flex-1 md:flex-none px-4 py-2 bg-slate-100 rounded-xl text-[10px] font-bold">KEMBALI</button>
+                    <span id="labelRentang" class="text-[10px] font-bold text-slate-400 min-w-[60px] text-center flex items-center justify-center">...</span>
+                    <button onclick="halamanNext()" class="flex-1 md:flex-none px-4 py-2 bg-slate-100 rounded-xl text-[10px] font-bold">LANJUT</button>
                 </div>
             </div>
 
-            <div id="barJeda" class="hidden p-4 bg-red-600 text-white rounded-2xl shadow-lg text-center font-black text-[10px] uppercase tracking-widest sticky top-[140px] md:relative md:top-0 z-20">
-                KEAMANAN: TUNGGU <span id="detikJeda">30</span> DETIK...
-            </div>
+            <div id="barJeda" class="hidden p-4 bg-red-600 text-white rounded-2xl shadow-lg text-center font-black text-[10px] uppercase tracking-widest">TUNGGU <span id="detikJeda">30</span> DETIK...</div>
 
-            <!-- List Desktop -->
-            <div class="hidden md:block overflow-hidden border border-slate-200 rounded-2xl bg-white">
-                <table class="w-full text-left text-sm">
-                    <thead class="bg-slate-50 text-slate-400 uppercase text-[10px] font-black tracking-widest">
-                        <tr>
-                            <th class="px-6 py-5">Nama Alumni</th>
-                            <th class="px-6 py-5">Status RSVP</th>
-                            <th class="px-6 py-5">Status Kirim</th>
-                            <th class="px-6 py-5 text-right">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="isiTabelDesktop" class="divide-y divide-slate-50"></tbody>
-                </table>
-            </div>
-
-            <!-- List Mobile (Cards) -->
-            <div id="isiTabelMobile" class="md:hidden space-y-3 pb-20"></div>
+            <div id="isiTabelMobile" class="space-y-3 pb-20"></div>
         </div>
     </main>
 
-    <!-- Modal Pesan -->
-    <div id="modalPesan" class="fixed inset-0 bg-slate-900/60 hidden flex items-center justify-center z-50 p-6 backdrop-blur-sm">
-        <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center">
-            <div id="modalIcon" class="mb-4 flex justify-center text-blue-600">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+    <!-- Modal Daftar Nama -->
+    <div id="modalDaftar" class="fixed inset-0 bg-slate-900/60 hidden flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl w-full max-w-xl max-h-[70vh] flex flex-col shadow-2xl">
+            <div class="p-6 border-b flex justify-between items-center">
+                <h3 id="judulModal" class="font-black text-slate-900 uppercase text-sm">Daftar Alumni</h3>
+                <button onclick="tutupModalDaftar()" class="text-slate-400">TUTUP</button>
             </div>
-            <h3 id="modalJudul" class="font-black text-xl mb-2 text-slate-900 uppercase">Perhatian</h3>
-            <p id="modalIsi" class="text-slate-500 text-sm mb-8 leading-relaxed"></p>
-            <button onclick="tutupModal()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold active:scale-95 transition-transform">MENGERTI</button>
+            <div class="p-4 overflow-y-auto smooth-scroll flex-1">
+                <ul id="listNamaRSVP" class="space-y-2"></ul>
+            </div>
         </div>
     </div>
 
@@ -137,16 +123,6 @@ Agar panitia bisa menyiapkan porsi makanan dengan akurat.</textarea>
         const WAKTU_TUNGGU = 30;
         let kunciKeamanan = false;
 
-        function tampilkanModal(judul, isi) {
-            document.getElementById('modalJudul').innerText = judul;
-            document.getElementById('modalIsi').innerText = isi;
-            document.getElementById('modalPesan').classList.remove('hidden');
-        }
-
-        function tutupModal() {
-            document.getElementById('modalPesan').classList.add('hidden');
-        }
-
         function formatNomor(input) {
             let bersih = String(input).replace(/\D/g, '');
             if (bersih.startsWith('0')) bersih = '62' + bersih.substring(1);
@@ -155,7 +131,7 @@ Agar panitia bisa menyiapkan porsi makanan dengan akurat.</textarea>
         }
 
         async function muatData() {
-            const url = document.getElementById('urlGas').value;
+            const url = "https://script.google.com/macros/s/AKfycbyea66hMVDpJP0t6xmR0Z_WYfRe3s2h-OeOptPmFz9v-tUAG-vWBxULjiyjErhGEgWK/exec";
             const btn = document.getElementById('btnMuat');
             btn.innerText = 'SINKRONISASI...';
             btn.disabled = true;
@@ -164,121 +140,74 @@ Agar panitia bisa menyiapkan porsi makanan dengan akurat.</textarea>
                 const respon = await fetch(url);
                 const hasil = await respon.json();
                 
-                let rawData = hasil.filter(item => {
-                    const nama = item.nama || item.Nama || item.NAMA;
-                    const hp = item.hp || item.HP || item['No HP'];
-                    return nama && hp;
+                let h14 = 0, t14 = 0, h15 = 0, t15 = 0, belum = 0;
+                hasil.forEach(item => {
+                    const r14 = (item.RSVP_14 || '-').toLowerCase();
+                    const r15 = (item.RSVP_15 || '-').toLowerCase();
+                    if (r14.includes('hadir') && !r14.includes('tidak')) h14++; else if (r14.includes('tidak')) t14++;
+                    if (r15.includes('hadir') && !r15.includes('tidak')) h15++; else if (r15.includes('tidak')) t15++;
+                    if (r14 === '-' && r15 === '-') belum++;
                 });
 
-                // Sort: Belum RSVP (-) paling atas, kemudian yang belum terkirim WA
-                rawData.sort((a, b) => {
-                    const rsvpA = (a.Status_RSVP || '-').trim();
-                    const rsvpB = (b.Status_RSVP || '-').trim();
-                    const waA = (a.Status_WA || 'Belum').toLowerCase();
-                    const waB = (b.Status_WA || 'Belum').toLowerCase();
+                document.getElementById('statHadir14').innerText = h14;
+                document.getElementById('statTidak14').innerText = t14;
+                document.getElementById('statHadir15').innerText = h15;
+                document.getElementById('statTidak15').innerText = t15;
 
-                    if (rsvpA === '-' && rsvpB !== '-') return -1;
-                    if (rsvpA !== '-' && rsvpB === '-') return 1;
-                    if (waA === 'belum' && waB !== 'belum') return -1;
-                    if (waA !== 'belum' && waB === 'belum') return 1;
-                    return 0;
+                databaseAlumni = hasil.sort((a, b) => {
+                    const rA = a.RSVP_14 === '-' && a.RSVP_15 === '-';
+                    const rB = b.RSVP_14 === '-' && b.RSVP_15 === '-';
+                    return rA === rB ? 0 : rA ? -1 : 1;
                 });
 
-                databaseAlumni = rawData;
                 posisiData = 0;
                 renderTabel();
                 document.getElementById('areaTabel').classList.remove('hidden');
-            } catch (err) {
-                tampilkanModal('Gagal', 'Terjadi kesalahan koneksi ke server. Pastikan URL benar.');
-            } finally {
-                btn.innerText = 'SEGARKAN & URUTKAN PRIORITAS';
-                btn.disabled = false;
-            }
+            } catch (err) { console.error(err); }
+            finally { btn.innerText = 'SINKRONKAN & HITUNG TOTAL RSVP'; btn.disabled = false; }
         }
 
         function renderTabel() {
-            const wadahDesktop = document.getElementById('isiTabelDesktop');
-            const wadahMobile = document.getElementById('isiTabelMobile');
+            const wadah = document.getElementById('isiTabelMobile');
             const draf = document.getElementById('teksPesan').value;
-            const urlGas = document.getElementById('urlGas').value;
+            const urlGas = "https://script.google.com/macros/s/AKfycbyea66hMVDpJP0t6xmR0Z_WYfRe3s2h-OeOptPmFz9v-tUAG-vWBxULjiyjErhGEgWK/exec";
             
-            wadahDesktop.innerHTML = '';
-            wadahMobile.innerHTML = '';
-            
+            wadah.innerHTML = '';
             const dataHalaman = databaseAlumni.slice(posisiData, posisiData + perHalaman);
-            
             document.getElementById('labelRentang').innerText = `${posisiData + 1}-${Math.min(posisiData + perHalaman, databaseAlumni.length)}`;
-            document.getElementById('btnPrev').disabled = posisiData === 0;
-            document.getElementById('btnNext').disabled = posisiData + perHalaman >= databaseAlumni.length;
 
             dataHalaman.forEach(row => {
-                const nama = row.nama || row.Nama || row.NAMA;
-                const hpRaw = row.hp || row.HP || row['No HP'];
-                const statusWA = (row.Status_WA || 'Belum').toLowerCase();
-                const statusRSVP = row.Status_RSVP || '-';
-                const hpWA = formatNomor(hpRaw);
-                const isSelesai = statusWA === 'terkirim';
+                const nama = row.nama || row.Nama;
+                const r14 = row.RSVP_14 || '-';
+                const r15 = row.RSVP_15 || '-';
+                const hpWA = formatNomor(row.hp || row.HP);
+                const isSelesai = (row.Status_WA || '').toLowerCase() === 'terkirim';
                 
-                const pesanFix = draf.replace(/{{nama}}/g, nama);
-                const link = `https://wa.me/${hpWA}?text=${encodeURIComponent(pesanFix)}`;
-
-                let rsvpBadge = "bg-slate-100 text-slate-400";
-                if (statusRSVP.toLowerCase().includes('hadir') && !statusRSVP.toLowerCase().includes('tidak')) {
-                    rsvpBadge = "bg-green-100 text-green-700 border border-green-200";
-                } else if (statusRSVP.toLowerCase().includes('tidak')) {
-                    rsvpBadge = "bg-red-100 text-red-700 border border-red-200";
-                }
-
-                const btnClass = isSelesai || kunciKeamanan || counterSesi >= LIMIT_SESI 
-                    ? 'bg-slate-100 text-slate-300 pointer-events-none' 
-                    : 'bg-blue-600 text-white active:bg-black shadow-lg shadow-blue-50';
-
-                // Render Desktop Table
-                const tr = document.createElement('tr');
-                tr.className = isSelesai ? 'opacity-50 grayscale' : 'hover:bg-blue-50/30';
-                tr.innerHTML = `
-                    <td class="px-6 py-5 font-bold text-slate-800">${nama}</td>
-                    <td class="px-6 py-5"><span class="px-3 py-1 rounded-full text-[10px] font-black uppercase ${rsvpBadge}">${statusRSVP}</span></td>
-                    <td class="px-6 py-5 text-[10px] font-black uppercase ${isSelesai ? 'text-green-600' : 'text-slate-300'}">${isSelesai ? '✓ Terkirim' : '○ Antrean'}</td>
-                    <td class="px-6 py-5 text-right">
-                        <a href="${link}" target="_blank" onclick="konfirmasiKirim(this, '${hpWA}', '${urlGas}')" class="inline-block px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest ${btnClass}">
-                            ${isSelesai ? 'SELESAI' : 'KIRIM WA'}
-                        </a>
-                    </td>
-                `;
-                wadahDesktop.appendChild(tr);
-
-                // Render Mobile Card
                 const card = document.createElement('div');
-                card.className = `p-4 rounded-2xl border ${isSelesai ? 'bg-slate-50 border-slate-100' : 'bg-white border-slate-200 shadow-sm'}`;
+                card.className = `p-4 rounded-2xl border ${isSelesai ? 'bg-slate-50 opacity-60' : 'bg-white shadow-sm border-slate-200'}`;
                 card.innerHTML = `
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="max-w-[70%]">
-                            <h3 class="font-bold text-slate-800 leading-tight">${nama}</h3>
-                            <p class="text-[10px] font-mono text-slate-400 mt-1">${hpWA}</p>
+                    <div class="flex justify-between items-start mb-3">
+                        <h3 class="font-bold text-slate-800 text-sm leading-tight">${nama}</h3>
+                        <div class="flex gap-1">
+                            <span class="px-1.5 py-0.5 rounded text-[8px] font-black uppercase ${r14.includes('Hadir') ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-400'}">SAB: ${r14}</span>
+                            <span class="px-1.5 py-0.5 rounded text-[8px] font-black uppercase ${r15.includes('Hadir') ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-400'}">MIN: ${r15}</span>
                         </div>
-                        <span class="px-2 py-1 rounded-lg text-[9px] font-black uppercase ${rsvpBadge}">${statusRSVP}</span>
                     </div>
                     <div class="flex items-center justify-between gap-3">
-                        <span class="text-[9px] font-black uppercase ${isSelesai ? 'text-green-600' : 'text-slate-300'}">
-                            ${isSelesai ? '✓ Terkirim ke Pusat' : '○ Menunggu Dikirim'}
-                        </span>
-                        <a href="${link}" target="_blank" onclick="konfirmasiKirim(this, '${hpWA}', '${urlGas}')" 
-                           class="px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-wider text-center flex-1 ${btnClass}">
-                           ${isSelesai ? 'SUDAH' : 'KIRIM PESAN'}
+                        <span class="text-[8px] font-black uppercase ${isSelesai ? 'text-green-600' : 'text-slate-300'}">${isSelesai ? 'TERKIRIM' : 'ANTREAN'}</span>
+                        <a href="https://wa.me/${hpWA}?text=${encodeURIComponent(draf.replace(/{{nama}}/g, nama))}" target="_blank" 
+                           onclick="konfirmasiKirim(this, '${hpWA}', '${urlGas}')"
+                           class="px-5 py-2.5 rounded-xl text-[9px] font-black uppercase text-center flex-1 ${isSelesai || kunciKeamanan || counterSesi >= LIMIT_SESI ? 'bg-slate-100 text-slate-300 pointer-events-none' : 'bg-blue-600 text-white'}">
+                           ${isSelesai ? 'SUDAH' : 'KIRIM WA'}
                         </a>
                     </div>
                 `;
-                wadahMobile.appendChild(card);
+                wadah.appendChild(card);
             });
         }
 
         function konfirmasiKirim(el, hp, url) {
-            if (kunciKeamanan || counterSesi >= LIMIT_SESI) return;
-
-            el.innerText = 'WAIT...';
-            el.className = 'px-6 py-3 rounded-xl text-[10px] font-black bg-slate-100 text-slate-300 pointer-events-none uppercase text-center flex-1';
-            
+            if (kunciKeamanan) return;
             fetch(`${url}?action=update&hp=${hp}`).catch(() => {});
             counterSesi++;
             updateProgres();
@@ -286,54 +215,52 @@ Agar panitia bisa menyiapkan porsi makanan dengan akurat.</textarea>
         }
 
         function updateProgres() {
-            const persen = (counterSesi / LIMIT_SESI) * 100;
-            document.getElementById('barProgres').style.width = `${persen}%`;
-            document.getElementById('labelStatistik').innerText = `${counterSesi} / ${LIMIT_SESI}`;
+            document.getElementById('barProgres').style.width = `${(counterSesi / LIMIT_SESI) * 100}%`;
+            document.getElementById('labelStatistik').innerText = `SESI: ${counterSesi} / ${LIMIT_SESI}`;
         }
 
         function aktifkanJeda() {
             kunciKeamanan = true;
             const bar = document.getElementById('barJeda');
-            const teksDetik = document.getElementById('detikJeda');
+            const teks = document.getElementById('detikJeda');
             bar.classList.remove('hidden');
             renderTabel();
-
             let sisa = WAKTU_TUNGGU;
-            teksDetik.innerText = sisa;
-            
             const timer = setInterval(() => {
-                sisa--;
-                teksDetik.innerText = sisa;
+                sisa--; teks.innerText = sisa;
                 if (sisa <= 0) {
-                    clearInterval(timer);
-                    kunciKeamanan = false;
-                    bar.classList.add('hidden');
-                    if (counterSesi >= LIMIT_SESI) {
-                        bar.innerText = 'LIMIT 50 TERCAPAI. HARAP ISTIRAHAT.';
-                        bar.classList.replace('bg-red-600', 'bg-slate-900');
-                        bar.classList.remove('hidden');
-                    } else {
-                        renderTabel();
-                    }
+                    clearInterval(timer); kunciKeamanan = false; bar.classList.add('hidden');
+                    if (counterSesi >= LIMIT_SESI) { bar.innerText = 'LIMIT TERCAPAI'; bar.classList.replace('bg-red-600', 'bg-slate-900'); bar.classList.remove('hidden'); }
+                    else { renderTabel(); }
                 }
             }, 1000);
         }
 
-        function halamanNext() {
-            if (posisiData + perHalaman < databaseAlumni.length) {
-                posisiData += perHalaman;
-                renderTabel();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
+        function tampilkanDaftarRSVP(tipe) {
+            const list = document.getElementById('listNamaRSVP');
+            list.innerHTML = '';
+            const filter = databaseAlumni.filter(item => {
+                const r14 = (item.RSVP_14 || '-').toLowerCase();
+                const r15 = (item.RSVP_15 || '-').toLowerCase();
+                if (tipe === 'hadir14') return r14.includes('hadir') && !r14.includes('tidak');
+                if (tipe === 'tidak14') return r14.includes('tidak');
+                if (tipe === 'hadir15') return r15.includes('hadir') && !r15.includes('tidak');
+                if (tipe === 'tidak15') return r15.includes('tidak');
+                return false;
+            });
+            filter.forEach((item, i) => {
+                const li = document.createElement('li');
+                li.className = "p-3 bg-slate-50 rounded-xl text-xs font-bold border border-slate-100";
+                li.innerText = `${i+1}. ${item.nama || item.Nama}`;
+                list.appendChild(li);
+            });
+            document.getElementById('modalDaftar').classList.remove('hidden');
+            document.body.classList.add('modal-open');
         }
 
-        function halamanPrev() {
-            if (posisiData - perHalaman >= 0) {
-                posisiData -= perHalaman;
-                renderTabel();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-        }
+        function tutupModalDaftar() { document.getElementById('modalDaftar').classList.add('hidden'); document.body.classList.remove('modal-open'); }
+        function halamanNext() { if (posisiData + perHalaman < databaseAlumni.length) { posisiData += perHalaman; renderTabel(); window.scrollTo(0, 0); } }
+        function halamanPrev() { if (posisiData - perHalaman >= 0) { posisiData -= perHalaman; renderTabel(); window.scrollTo(0, 0); } }
     </script>
 </body>
 </html>
