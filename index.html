@@ -8,137 +8,128 @@
     <style>
         .smooth-scroll { -webkit-overflow-scrolling: touch; }
         .modal-open { overflow: hidden; }
+        .active-scale:active { transform: scale(0.95); }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .animate-fade { animation: fadeIn 0.4s ease-out; }
     </style>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans min-h-screen">
+    <!-- Header -->
     <header class="bg-blue-700 text-white p-4 sticky top-0 z-40 shadow-lg md:relative md:bg-transparent md:text-slate-900 md:shadow-none md:p-8">
         <div class="max-w-6xl mx-auto flex justify-between items-center">
             <div>
-                <h1 class="text-xl md:text-3xl font-black tracking-tight uppercase">Dashboard <span class="md:text-blue-600">IKATP</span></h1>
-                <p class="text-[10px] md:text-sm font-medium opacity-80 md:text-slate-500">Mubes & Buka Bersama 2026</p>
+                <h1 class="text-xl md:text-3xl font-black tracking-tight uppercase italic">Dashboard <span class="md:text-blue-600">IKATP</span></h1>
+                <p class="text-[10px] md:text-sm font-medium opacity-80 md:text-slate-500">Integrasi RSVP 14 & 15 Maret 2026</p>
             </div>
-            <div class="hidden md:block bg-green-500 text-white px-4 py-1 rounded-full text-[10px] font-bold">KONEKSI RSVP AKTIF</div>
+            <button onclick="muatData()" class="bg-white text-blue-700 px-4 py-2 rounded-full text-[10px] font-bold shadow-md active-scale transition-all">SINKRON DATA</button>
         </div>
     </header>
 
     <main class="max-w-6xl mx-auto p-4 md:p-8 space-y-6">
-        <!-- Statistik Dual Agenda -->
+        <!-- Statistik -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Bukber 14 Mar -->
             <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest">Sabtu, 14 Mar (Bukber)</h3>
-                    <span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-bold">Katering</span>
-                </div>
+                <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest italic text-green-600 mb-4">SABTU, 14 MAR (BUKBER)</h3>
                 <div class="grid grid-cols-2 gap-4">
-                    <div onclick="tampilkanDaftarRSVP('hadir14')" class="bg-slate-50 p-4 rounded-2xl cursor-pointer hover:bg-green-50 transition">
-                        <span id="statHadir14" class="text-3xl font-black text-green-600 block">0</span>
-                        <span class="text-[9px] font-bold text-slate-400 uppercase">Hadir</span>
+                    <div onclick="tampilkanDaftar('hadir14')" class="bg-green-50 p-4 rounded-2xl cursor-pointer hover:bg-green-100 transition active-scale border border-transparent hover:border-green-200">
+                        <span id="statHadir14" class="text-3xl font-black text-green-600 block leading-none">0</span>
+                        <span class="text-[9px] font-bold text-green-700 uppercase mt-1 block">Konfirmasi Hadir</span>
                     </div>
-                    <div onclick="tampilkanDaftarRSVP('tidak14')" class="bg-slate-50 p-4 rounded-2xl cursor-pointer hover:bg-red-50 transition">
-                        <span id="statTidak14" class="text-3xl font-black text-red-500 block">0</span>
-                        <span class="text-[9px] font-bold text-slate-400 uppercase">Berhalangan</span>
+                    <div onclick="tampilkanDaftar('tidak14')" class="bg-red-50 p-4 rounded-2xl cursor-pointer hover:bg-red-100 transition active-scale border border-transparent hover:border-red-200">
+                        <span id="statTidak14" class="text-3xl font-black text-red-500 block leading-none">0</span>
+                        <span class="text-[9px] font-bold text-red-700 uppercase mt-1 block">Berhalangan</span>
                     </div>
                 </div>
             </div>
-            <!-- Mubes 15 Mar -->
+
             <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest">Minggu, 15 Mar (Mubes)</h3>
-                    <span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-[10px] font-bold">Rapat</span>
-                </div>
+                <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest italic text-blue-600 mb-4">MINGGU, 15 MAR (MUBES)</h3>
                 <div class="grid grid-cols-2 gap-4">
-                    <div onclick="tampilkanDaftarRSVP('hadir15')" class="bg-slate-50 p-4 rounded-2xl cursor-pointer hover:bg-blue-50 transition">
-                        <span id="statHadir15" class="text-3xl font-black text-blue-600 block">0</span>
-                        <span class="text-[9px] font-bold text-slate-400 uppercase">Hadir</span>
+                    <div onclick="tampilkanDaftar('hadir15')" class="bg-blue-50 p-4 rounded-2xl cursor-pointer hover:bg-blue-100 transition active-scale border border-transparent hover:border-blue-200">
+                        <span id="statHadir15" class="text-3xl font-black text-blue-600 block leading-none">0</span>
+                        <span class="text-[9px] font-bold text-blue-700 uppercase mt-1 block">Konfirmasi Hadir</span>
                     </div>
-                    <div onclick="tampilkanDaftarRSVP('tidak15')" class="bg-slate-50 p-4 rounded-2xl cursor-pointer hover:bg-red-50 transition">
-                        <span id="statTidak15" class="text-3xl font-black text-red-500 block">0</span>
-                        <span class="text-[9px] font-bold text-slate-400 uppercase">Berhalangan</span>
+                    <div onclick="tampilkanDaftar('tidak15')" class="bg-red-50 p-4 rounded-2xl cursor-pointer hover:bg-red-100 transition active-scale border border-transparent hover:border-red-200">
+                        <span id="statTidak15" class="text-3xl font-black text-red-500 block leading-none">0</span>
+                        <span class="text-[9px] font-bold text-red-700 uppercase mt-1 block">Berhalangan</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Input & Pesan -->
-        <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
-            <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Draft Pesan (14 & 15 Maret)</label>
-            <textarea id="teksPesan" rows="8" class="w-full border border-slate-100 bg-slate-50 rounded-2xl p-4 text-sm leading-relaxed mb-4">Salam Alumni FT UNP. Halo {{nama}}.
+        <!-- Draft & Belum Respon -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
+                <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Draft Pesan Undangan</label>
+                <textarea id="teksPesan" rows="6" class="w-full border-none bg-slate-50 rounded-2xl p-4 text-sm leading-relaxed mb-4 focus:ring-2 focus:ring-blue-500 outline-none">Salam Alumni FT UNP. Halo {{nama}}.
 
-Kami mengundang Anda pada rangkaian acara IKATP:
-1. Sabtu, 14 Mar (13.30-20.00): Bukber, Tanya Jawab Panelis, & Santunan.
-2. Minggu, 15 Mar (08.00-Selesai): Musyawarah Besar (Mubes).
+Kami mengundang Kamu pada rangkaian acara IKATP:
+1. Sabtu, 14 Mar (13.30-20.00): Bukber & Santunan.
+2. Minggu, 15 Mar (08.00-Selesai): Mubes.
 
-Konfirmasi kehadiran Anda segera di:
+Konfirmasi kehadiran Kamu segera di:
 https://databasealumniftunp.netlify.app/
 
 Tutorial Login: https://drive.google.com/file/d/12TrXvSG2QKb28vAqzrfAhJNNGPAFMokz/view?usp=sharing
-Tutorial RSVP: https://i.ibb.co.com/HLh8wkdg/undangan-sender.png
-
-Data Anda sangat penting untuk menghitung porsi makanan katering.</textarea>
-            <button onclick="muatData()" id="btnMuat" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold active:scale-95 transition shadow-xl">SEGARKAN DATA & HITUNG RSVP</button>
+Tutorial RSVP: https://i.ibb.co.com/HLh8wkdg/undangan-sender.png</textarea>
+                <button onclick="muatData()" id="btnMuat" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold active-scale transition shadow-xl uppercase tracking-wider text-xs">PROSES & URUTKAN PRIORITAS</button>
+            </div>
+            
+            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 flex flex-col justify-center text-center">
+                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 text-blue-600">Belum Ada Respon</span>
+                <span id="statBelum" class="text-5xl font-black text-slate-900">0</span>
+            </div>
         </div>
 
-        <!-- Daftar & Kontrol -->
-        <div id="areaTabel" class="hidden space-y-4">
-            <div class="bg-white p-4 rounded-2xl shadow-sm sticky top-[72px] md:relative md:top-0 z-30 flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="flex items-center gap-4">
-                    <span id="labelStatistik" class="text-[10px] font-black text-blue-600 bg-blue-50 px-3 py-2 rounded-xl">SESI: 0 / 50</span>
-                    <div class="w-32 h-2 bg-slate-100 rounded-full overflow-hidden">
-                        <div id="barProgres" class="h-full bg-blue-600 transition-all duration-700" style="width: 0%"></div>
-                    </div>
-                </div>
-                <div class="flex gap-2 w-full md:w-auto">
-                    <button onclick="halamanPrev()" class="flex-1 md:flex-none px-4 py-2 bg-slate-100 rounded-xl text-[10px] font-bold">KEMBALI</button>
-                    <span id="labelRentang" class="text-[10px] font-bold text-slate-400 min-w-[60px] text-center flex items-center justify-center">...</span>
-                    <button onclick="halamanNext()" class="flex-1 md:flex-none px-4 py-2 bg-slate-100 rounded-xl text-[10px] font-bold">LANJUT</button>
-                </div>
-            </div>
-
-            <div id="barJeda" class="hidden p-4 bg-red-600 text-white rounded-2xl shadow-lg text-center font-black text-[10px] uppercase tracking-widest">TUNGGU <span id="detikJeda">30</span> DETIK...</div>
-
-            <div id="isiTabelMobile" class="space-y-3 pb-20"></div>
+        <!-- Tabel Monitoring -->
+        <div id="areaTabel" class="hidden space-y-4 animate-fade">
+            <div id="barJeda" class="hidden p-4 bg-red-600 text-white rounded-2xl shadow-lg text-center font-black text-[10px] uppercase tracking-widest sticky top-[72px] md:relative md:top-0 z-30">PENGAMAN: TUNGGU <span id="detikJeda">30</span> DETIK...</div>
+            <div id="isiTabelMobile" class="space-y-3 pb-24"></div>
         </div>
     </main>
 
-    <!-- Modal Daftar Nama -->
-    <div id="modalDaftar" class="fixed inset-0 bg-slate-900/60 hidden flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-        <div class="bg-white rounded-3xl w-full max-w-xl max-h-[70vh] flex flex-col shadow-2xl">
-            <div class="p-6 border-b flex justify-between items-center">
-                <h3 id="judulModal" class="font-black text-slate-900 uppercase text-sm">Daftar Alumni</h3>
-                <button onclick="tutupModalDaftar()" class="text-slate-400">TUTUP</button>
+    <!-- Modal Daftar -->
+    <div id="modalDaftar" class="fixed inset-0 bg-slate-900/80 hidden flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-[32px] w-full max-w-xl max-h-[80vh] flex flex-col shadow-2xl overflow-hidden">
+            <div class="p-8 border-b flex justify-between items-center">
+                <h3 id="judulModal" class="font-black text-slate-900 uppercase text-xs tracking-tight">Daftar Alumni</h3>
+                <button onclick="tutupModal()" class="text-slate-400 p-2 active-scale"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
             </div>
-            <div class="p-4 overflow-y-auto smooth-scroll flex-1">
-                <ul id="listNamaRSVP" class="space-y-2"></ul>
-            </div>
+            <div class="p-6 overflow-y-auto flex-1 bg-slate-50"><ul id="listNama" class="space-y-2"></ul></div>
+            <div class="p-6 bg-white"><button onclick="tutupModal()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold text-xs active-scale uppercase tracking-widest">Tutup</button></div>
         </div>
     </div>
 
     <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbyk9tk-6_xk5S36WWLmfxK4ofCB8QPHT1mnZEsIO-_Sb_rPCcTgBxKellS6t81p1HwL/exec";
         let databaseAlumni = [];
-        let posisiData = 0;
-        const perHalaman = 20;
         let counterSesi = 0;
         const LIMIT_SESI = 50;
         const WAKTU_TUNGGU = 30;
         let kunciKeamanan = false;
 
         function formatNomor(input) {
-            let bersih = String(input).replace(/\D/g, '');
+            let bersih = String(input || '').replace(/\D/g, '');
             if (bersih.startsWith('0')) bersih = '62' + bersih.substring(1);
-            if (bersih.startsWith('8')) bersih = '62' + bersih;
+            else if (bersih.startsWith('8')) bersih = '62' + bersih;
             return bersih;
         }
 
         async function muatData() {
-            const url = "https://script.google.com/macros/s/AKfycbyea66hMVDpJP0t6xmR0Z_WYfRe3s2h-OeOptPmFz9v-tUAG-vWBxULjiyjErhGEgWK/exec";
             const btn = document.getElementById('btnMuat');
-            btn.innerText = 'SINKRONISASI...';
+            btn.innerText = 'MENYINKRONKAN...';
             btn.disabled = true;
+            document.body.style.opacity = "0.7";
 
             try {
-                const respon = await fetch(url);
+                const respon = await fetch(API_URL);
                 const hasil = await respon.json();
+                
+                // PROTEKSI: Cek jika hasil adalah error dari GAS
+                if (hasil.error) throw new Error(hasil.error);
+
+                // PROTEKSI: Pastikan hasil adalah Array
+                if (!Array.isArray(hasil)) throw new Error("Format data salah. Pastikan Apps Script di-deploy sebagai 'Anyone'.");
                 
                 let h14 = 0, t14 = 0, h15 = 0, t15 = 0, belum = 0;
                 hasil.forEach(item => {
@@ -153,52 +144,56 @@ Data Anda sangat penting untuk menghitung porsi makanan katering.</textarea>
                 document.getElementById('statTidak14').innerText = t14;
                 document.getElementById('statHadir15').innerText = h15;
                 document.getElementById('statTidak15').innerText = t15;
+                document.getElementById('statBelum').innerText = belum;
 
+                // Sort: Prioritas yang belum isi RSVP
                 databaseAlumni = hasil.sort((a, b) => {
-                    const rA = a.RSVP_14 === '-' && a.RSVP_15 === '-';
-                    const rB = b.RSVP_14 === '-' && b.RSVP_15 === '-';
+                    const rA = (a.RSVP_14 === '-' && a.RSVP_15 === '-');
+                    const rB = (b.RSVP_14 === '-' && b.RSVP_15 === '-');
                     return rA === rB ? 0 : rA ? -1 : 1;
                 });
 
-                posisiData = 0;
                 renderTabel();
                 document.getElementById('areaTabel').classList.remove('hidden');
-            } catch (err) { console.error(err); }
-            finally { btn.innerText = 'SINKRONKAN & HITUNG TOTAL RSVP'; btn.disabled = false; }
+            } catch (err) { 
+                alert("Gagal memuat data: " + err.message);
+                console.error(err);
+            } finally { 
+                btn.innerText = 'PROSES & URUTKAN PRIORITAS'; 
+                btn.disabled = false;
+                document.body.style.opacity = "1";
+            }
         }
 
         function renderTabel() {
             const wadah = document.getElementById('isiTabelMobile');
             const draf = document.getElementById('teksPesan').value;
-            const urlGas = "https://script.google.com/macros/s/AKfycbyea66hMVDpJP0t6xmR0Z_WYfRe3s2h-OeOptPmFz9v-tUAG-vWBxULjiyjErhGEgWK/exec";
-            
             wadah.innerHTML = '';
-            const dataHalaman = databaseAlumni.slice(posisiData, posisiData + perHalaman);
-            document.getElementById('labelRentang').innerText = `${posisiData + 1}-${Math.min(posisiData + perHalaman, databaseAlumni.length)}`;
-
-            dataHalaman.forEach(row => {
-                const nama = row.nama || row.Nama;
+            
+            // Batasi tampilan hanya 50 untuk performa mobile
+            databaseAlumni.slice(0, 50).forEach(row => {
+                const nama = row.nama || row.Nama || 'Tanpa Nama';
                 const r14 = row.RSVP_14 || '-';
                 const r15 = row.RSVP_15 || '-';
-                const hpWA = formatNomor(row.hp || row.HP);
-                const isSelesai = (row.Status_WA || '').toLowerCase() === 'terkirim';
+                const statusWA = (row.Status_WA || 'Antrean').toLowerCase();
+                const isSent = statusWA === 'terkirim';
+                const hp = formatNomor(row.hp || row.HP || row['No HP']);
                 
                 const card = document.createElement('div');
-                card.className = `p-4 rounded-2xl border ${isSelesai ? 'bg-slate-50 opacity-60' : 'bg-white shadow-sm border-slate-200'}`;
+                card.className = `p-5 rounded-[32px] border transition-all ${isSent ? 'bg-slate-50 opacity-60 grayscale' : 'bg-white shadow-sm border-slate-200'}`;
                 card.innerHTML = `
-                    <div class="flex justify-between items-start mb-3">
-                        <h3 class="font-bold text-slate-800 text-sm leading-tight">${nama}</h3>
-                        <div class="flex gap-1">
-                            <span class="px-1.5 py-0.5 rounded text-[8px] font-black uppercase ${r14.includes('Hadir') ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-400'}">SAB: ${r14}</span>
-                            <span class="px-1.5 py-0.5 rounded text-[8px] font-black uppercase ${r15.includes('Hadir') ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-400'}">MIN: ${r15}</span>
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="font-black text-slate-800 text-sm leading-tight uppercase">${nama}</h4>
+                        <div class="flex flex-col gap-1 items-end">
+                            <span class="text-[7px] font-black px-2 py-0.5 rounded uppercase ${r14.includes('hadir') ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-400'}">SAB: ${r14}</span>
+                            <span class="text-[7px] font-black px-2 py-0.5 rounded uppercase ${r15.includes('hadir') ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-400'}">MIN: ${r15}</span>
                         </div>
                     </div>
-                    <div class="flex items-center justify-between gap-3">
-                        <span class="text-[8px] font-black uppercase ${isSelesai ? 'text-green-600' : 'text-slate-300'}">${isSelesai ? 'TERKIRIM' : 'ANTREAN'}</span>
-                        <a href="https://wa.me/${hpWA}?text=${encodeURIComponent(draf.replace(/{{nama}}/g, nama))}" target="_blank" 
-                           onclick="konfirmasiKirim(this, '${hpWA}', '${urlGas}')"
-                           class="px-5 py-2.5 rounded-xl text-[9px] font-black uppercase text-center flex-1 ${isSelesai || kunciKeamanan || counterSesi >= LIMIT_SESI ? 'bg-slate-100 text-slate-300 pointer-events-none' : 'bg-blue-600 text-white'}">
-                           ${isSelesai ? 'SUDAH' : 'KIRIM WA'}
+                    <div class="flex justify-between items-center gap-4">
+                        <span class="text-[8px] font-black ${isSent ? 'text-green-600' : 'text-slate-300'} uppercase tracking-widest">${statusWA}</span>
+                        <a href="https://wa.me/${hp}?text=${encodeURIComponent(draf.replace(/{{nama}}/g, nama))}" target="_blank" onclick="konfirmasiKirim(this, '${hp}')" 
+                           class="flex-1 text-center py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all shadow-md active-scale ${isSent || kunciKeamanan || counterSesi >= LIMIT_SESI ? 'bg-slate-100 text-slate-300 pointer-events-none' : 'bg-blue-600 text-white'}">
+                           ${isSent ? 'SELESAI' : 'KIRIM WA'}
                         </a>
                     </div>
                 `;
@@ -206,17 +201,11 @@ Data Anda sangat penting untuk menghitung porsi makanan katering.</textarea>
             });
         }
 
-        function konfirmasiKirim(el, hp, url) {
-            if (kunciKeamanan) return;
-            fetch(`${url}?action=update&hp=${hp}`).catch(() => {});
+        function konfirmasiKirim(el, hp) {
+            if (kunciKeamanan || counterSesi >= LIMIT_SESI) return;
+            fetch(`${API_URL}?action=update&hp=${hp}`).catch(() => {});
             counterSesi++;
-            updateProgres();
             aktifkanJeda();
-        }
-
-        function updateProgres() {
-            document.getElementById('barProgres').style.width = `${(counterSesi / LIMIT_SESI) * 100}%`;
-            document.getElementById('labelStatistik').innerText = `SESI: ${counterSesi} / ${LIMIT_SESI}`;
         }
 
         function aktifkanJeda() {
@@ -228,16 +217,17 @@ Data Anda sangat penting untuk menghitung porsi makanan katering.</textarea>
             let sisa = WAKTU_TUNGGU;
             const timer = setInterval(() => {
                 sisa--; teks.innerText = sisa;
-                if (sisa <= 0) {
-                    clearInterval(timer); kunciKeamanan = false; bar.classList.add('hidden');
-                    if (counterSesi >= LIMIT_SESI) { bar.innerText = 'LIMIT TERCAPAI'; bar.classList.replace('bg-red-600', 'bg-slate-900'); bar.classList.remove('hidden'); }
-                    else { renderTabel(); }
+                if (sisa <= 0) { 
+                    clearInterval(timer); 
+                    kunciKeamanan = false; 
+                    bar.classList.add('hidden'); 
+                    muatData(); 
                 }
             }, 1000);
         }
 
-        function tampilkanDaftarRSVP(tipe) {
-            const list = document.getElementById('listNamaRSVP');
+        function tampilkanDaftar(tipe) {
+            const list = document.getElementById('listNama');
             list.innerHTML = '';
             const filter = databaseAlumni.filter(item => {
                 const r14 = (item.RSVP_14 || '-').toLowerCase();
@@ -248,19 +238,17 @@ Data Anda sangat penting untuk menghitung porsi makanan katering.</textarea>
                 if (tipe === 'tidak15') return r15.includes('tidak');
                 return false;
             });
-            filter.forEach((item, i) => {
+            filter.forEach((it, i) => {
                 const li = document.createElement('li');
-                li.className = "p-3 bg-slate-50 rounded-xl text-xs font-bold border border-slate-100";
-                li.innerText = `${i+1}. ${item.nama || item.Nama}`;
+                li.className = "p-4 bg-white rounded-2xl text-[11px] font-bold border border-slate-100 shadow-sm flex items-center gap-3";
+                li.innerHTML = `<span class="bg-slate-100 w-6 h-6 rounded-full flex items-center justify-center text-[9px]">${i+1}</span> ${it.nama || it.Nama || 'Alumni'}`;
                 list.appendChild(li);
             });
             document.getElementById('modalDaftar').classList.remove('hidden');
-            document.body.classList.add('modal-open');
         }
 
-        function tutupModalDaftar() { document.getElementById('modalDaftar').classList.add('hidden'); document.body.classList.remove('modal-open'); }
-        function halamanNext() { if (posisiData + perHalaman < databaseAlumni.length) { posisiData += perHalaman; renderTabel(); window.scrollTo(0, 0); } }
-        function halamanPrev() { if (posisiData - perHalaman >= 0) { posisiData -= perHalaman; renderTabel(); window.scrollTo(0, 0); } }
+        function tutupModal() { document.getElementById('modalDaftar').classList.add('hidden'); }
+        window.onload = muatData;
     </script>
 </body>
 </html>
