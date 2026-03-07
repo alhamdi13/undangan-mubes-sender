@@ -91,14 +91,14 @@ Kami mengundang Kamu pada rangkaian acara IKATP:
 
 Konfirmasi kehadiran Kamu di:
 https://databasealumniftunp.netlify.app/
-agar panitia bisa menyiapkan makanan bukabersama serta hal lainnya
+Agar panitia bisa menyiapkan menu berbukabersama serta hal hal lainnya
 
-Berikut adalah panduan untuk konfirmasi kehadiran:
-1. Login terlebih dahulu ke web database di atas 
+Berikut adalah panduan untuk konfirmasi kehadiran :
+1. Login terlebih dahulu ke web database di atas
 Tutorial Login:
 https://drive.google.com/file/d/12TrXvSG2QKb28vAqzrfAhJNNGPAFMokz/view?usp=sharing
 
-2. Tentukan kehadiran anda di dalam halaman event
+2. Setelah login tentukan kehadiran anda dengan mengisi pilihan di halaman event
 Tutorial RSVP:
 https://i.ibb.co.com/HLh8wkdg/undangan-sender.png</textarea>
 
@@ -251,6 +251,24 @@ https://i.ibb.co.com/HLh8wkdg/undangan-sender.png</textarea>
             return String(statusAsli || "-");
         }
 
+        function urutkanData(data) {
+            return data.sort((a, b) => {
+                const aSent = ambilStatusWA(a).toLowerCase() === "terkirim";
+                const bSent = ambilStatusWA(b).toLowerCase() === "terkirim";
+
+                if (aSent && !bSent) return 1;
+                if (!aSent && bSent) return -1;
+
+                const aBelum = normalisasiRSVP(a.RSVP_14) === "belum" && normalisasiRSVP(a.RSVP_15) === "belum";
+                const bBelum = normalisasiRSVP(b.RSVP_14) === "belum" && normalisasiRSVP(b.RSVP_15) === "belum";
+
+                if (aBelum && !bBelum) return -1;
+                if (!aBelum && bBelum) return 1;
+
+                return ambilNama(a).localeCompare(ambilNama(b), "id");
+            });
+        }
+
         async function muatData() {
             const btn = document.getElementById("btnMuat");
             btn.innerText = "SINKRONISASI...";
@@ -285,20 +303,7 @@ https://i.ibb.co.com/HLh8wkdg/undangan-sender.png</textarea>
                 document.getElementById("statTidak15").innerText = t15;
                 document.getElementById("statBelum").innerText = belum;
 
-                databaseAlumni = hasil.sort((a, b) => {
-                    const aBelum = normalisasiRSVP(a.RSVP_14) === "belum" && normalisasiRSVP(a.RSVP_15) === "belum";
-                    const bBelum = normalisasiRSVP(b.RSVP_14) === "belum" && normalisasiRSVP(b.RSVP_15) === "belum";
-
-                    const aSent = ambilStatusWA(a).toLowerCase() === "terkirim";
-                    const bSent = ambilStatusWA(b).toLowerCase() === "terkirim";
-
-                    if (aBelum && !bBelum) return -1;
-                    if (!aBelum && bBelum) return 1;
-                    if (!aSent && bSent) return -1;
-                    if (aSent && !bSent) return 1;
-
-                    return ambilNama(a).localeCompare(ambilNama(b), "id");
-                });
+                databaseAlumni = urutkanData(hasil);
 
                 posisiData = 0;
                 renderTabel();
@@ -554,6 +559,8 @@ https://i.ibb.co.com/HLh8wkdg/undangan-sender.png</textarea>
                     document.getElementById("statHadir15").innerText = h15;
                     document.getElementById("statTidak15").innerText = t15;
                     document.getElementById("statBelum").innerText = belum;
+                    
+                    databaseAlumni = urutkanData(databaseAlumni);
                     renderTabel();
                 }
             } catch (err) {}
