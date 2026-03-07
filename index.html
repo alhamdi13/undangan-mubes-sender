@@ -1,96 +1,162 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>IKATP Dashboard - RSVP & Broadcast</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        .smooth-scroll { -webkit-overflow-scrolling: touch; }
-        .active-scale:active { transform: scale(0.97); }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .animate-fade { animation: fadeIn 0.4s ease-out; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IKATP Premium Dashboard - RSVP & Broadcast</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .smooth-scroll { -webkit-overflow-scrolling: touch; }
+    .active-scale:active { transform: scale(0.98); }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px);} to { opacity: 1; transform: translateY(0);} }
+    .animate-fade { animation: fadeIn 0.35s ease-out; }
+    .glass {
+      background: rgba(255,255,255,0.82);
+      backdrop-filter: blur(12px);
+    }
+  </style>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans min-h-screen">
 
-    <header class="bg-blue-700 text-white p-4 sticky top-0 z-50 shadow-lg md:bg-white md:text-slate-900 md:shadow-none md:p-8">
-        <div class="max-w-6xl mx-auto flex justify-between items-center gap-4">
+  <header class="sticky top-0 z-50 border-b border-slate-200 bg-white/90 backdrop-blur-xl shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 md:px-8 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl bg-blue-600 text-white flex items-center justify-center font-black shadow-lg">IK</div>
+          <div>
+            <h1 class="text-xl md:text-3xl font-black tracking-tight uppercase italic">
+              Premium Dashboard <span class="text-blue-600">IKATP</span>
+            </h1>
+            <div class="flex items-center gap-2">
+              <p class="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-[0.24em]">
+                RSVP & Broadcast Center 2026
+              </p>
+              <span class="flex h-2.5 w-2.5 relative" title="Auto-Lock Aktif">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-3">
+        <div class="px-4 py-2 rounded-2xl bg-slate-100 border border-slate-200">
+          <div class="text-[10px] uppercase tracking-widest font-black text-slate-400">Panitia Aktif</div>
+          <div id="namaPanitiaBadge" class="text-sm font-black text-slate-700">-</div>
+        </div>
+        <button onclick="muatData()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-2xl text-[11px] font-black shadow-md active-scale transition-all uppercase tracking-widest">
+          Sinkron Data
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-8 space-y-6 pb-32">
+
+    <!-- Hero Ringkas -->
+    <section class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+      <div class="lg:col-span-2 bg-gradient-to-br from-blue-700 via-blue-600 to-indigo-600 rounded-[28px] shadow-xl p-6 text-white">
+        <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
+          <div>
+            <div class="text-[10px] font-black uppercase tracking-[0.24em] text-blue-100">Command Center</div>
+            <h2 class="text-2xl md:text-3xl font-black mt-2 leading-tight">
+              Monitor RSVP Alumni & Kendalikan Pengiriman WA Tanpa Double Kirim
+            </h2>
+            <p class="mt-3 text-sm text-blue-100 max-w-2xl">
+              Dashboard ini memisahkan status respon alumni dan status pengiriman panitia, sehingga angka lebih mudah dipahami dan operasional lebih aman.
+            </p>
+          </div>
+          <div class="bg-white/10 border border-white/15 rounded-3xl px-5 py-4 min-w-[170px]">
+            <div class="text-[10px] font-black uppercase tracking-[0.24em] text-blue-100">Device Aktif</div>
+            <div id="deviceInfoTop" class="mt-2 text-sm font-mono break-all">-</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-[28px] shadow-sm border border-slate-200 p-5">
+        <div class="text-[10px] font-black uppercase tracking-[0.24em] text-slate-400">Belum Isi RSVP</div>
+        <div id="statBelum" class="mt-2 text-5xl font-black text-blue-600">0</div>
+        <p class="mt-2 text-[11px] font-bold uppercase tracking-tight text-slate-400">
+          Alumni belum mengonfirmasi kehadiran untuk 2 agenda
+        </p>
+      </div>
+
+      <div class="bg-white rounded-[28px] shadow-sm border border-slate-200 p-5">
+        <div class="text-[10px] font-black uppercase tracking-[0.24em] text-slate-400">Target Tersaring</div>
+        <div id="statFiltered" class="mt-2 text-5xl font-black text-slate-800">0</div>
+        <p class="mt-2 text-[11px] font-bold uppercase tracking-tight text-slate-400">
+          Jumlah data sesuai filter aktif
+        </p>
+      </div>
+    </section>
+
+    <!-- Status RSVP -->
+    <section class="space-y-3">
+      <div class="flex items-center gap-2">
+        <span class="text-[10px] font-black uppercase tracking-widest text-blue-600 bg-blue-50 px-3 py-1 rounded-full">Status RSVP Alumni</span>
+        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Monitoring respon kehadiran</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white p-6 rounded-[28px] shadow-sm border border-slate-200">
+          <div class="flex justify-between items-center mb-4 text-green-600">
+            <h3 class="text-[10px] font-black uppercase tracking-widest italic">Sabtu, 14 Mar (Bukber)</h3>
+            <span class="text-[8px] font-black bg-green-50 px-2 py-1 rounded">AGENDA 1</span>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div onclick="tampilkanDaftar('hadir14')" class="bg-green-50 p-4 rounded-2xl cursor-pointer active-scale hover:bg-green-100 transition border border-green-100">
+              <span id="statHadir14" class="text-3xl font-black text-green-600 block">0</span>
+              <span class="text-[9px] font-bold text-green-700 uppercase">Hadir Bukber</span>
+            </div>
+            <div onclick="tampilkanDaftar('tidak14')" class="bg-red-50 p-4 rounded-2xl cursor-pointer active-scale hover:bg-red-100 transition border border-red-100">
+              <span id="statTidak14" class="text-3xl font-black text-red-500 block">0</span>
+              <span class="text-[9px] font-bold text-red-700 uppercase">Berhalangan Bukber</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-[28px] shadow-sm border border-slate-200">
+          <div class="flex justify-between items-center mb-4 text-blue-600">
+            <h3 class="text-[10px] font-black uppercase tracking-widest italic">Minggu, 15 Mar (Mubes)</h3>
+            <span class="text-[8px] font-black bg-blue-50 px-2 py-1 rounded">AGENDA 2</span>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div onclick="tampilkanDaftar('hadir15')" class="bg-blue-50 p-4 rounded-2xl cursor-pointer active-scale hover:bg-blue-100 transition border border-blue-100">
+              <span id="statHadir15" class="text-3xl font-black text-blue-600 block">0</span>
+              <span class="text-[9px] font-bold text-blue-700 uppercase">Hadir Mubes</span>
+            </div>
+            <div onclick="tampilkanDaftar('tidak15')" class="bg-red-50 p-4 rounded-2xl cursor-pointer active-scale hover:bg-red-100 transition border border-red-100">
+              <span id="statTidak15" class="text-3xl font-black text-red-500 block">0</span>
+              <span class="text-[9px] font-bold text-red-700 uppercase">Berhalangan Mubes</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Status Pengiriman -->
+    <section class="space-y-3">
+      <div class="flex items-center gap-2">
+        <span class="text-[10px] font-black uppercase tracking-widest text-amber-600 bg-amber-50 px-3 py-1 rounded-full">Status Pengiriman Undangan WA</span>
+        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Monitoring kerja panitia</span>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 bg-white p-6 rounded-[28px] shadow-sm border border-slate-200">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
-                <h1 class="text-xl md:text-3xl font-black tracking-tight uppercase italic">
-                    Dashboard <span class="md:text-blue-600">IKATP</span>
-                </h1>
-                <div class="flex items-center gap-2">
-                    <p class="text-[10px] md:text-sm font-medium opacity-80 md:text-slate-500 uppercase tracking-widest">
-                        Manajemen Undangan 2026
-                    </p>
-                    <span class="flex h-2 w-2 relative" title="Auto-Lock Aktif">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                    </span>
-                </div>
+              <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Nama Panitia</label>
+              <input id="namaPanitia" type="text" placeholder="Isi nama panitia..." class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-sm focus:ring-2 focus:ring-blue-500 outline-none" oninput="simpanNamaPanitia(true)" />
             </div>
-            <button onclick="muatData()" class="bg-white text-blue-700 px-5 py-2 rounded-full text-[10px] font-bold shadow-md active-scale transition-all border border-blue-100 md:bg-blue-600 md:text-white whitespace-nowrap">
-                SINKRON DATA
-            </button>
-        </div>
-    </header>
-
-    <main class="max-w-6xl mx-auto p-4 md:p-8 space-y-6 pb-32">
-
-        <!-- Dashboard Statistik RSVP -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
-                <div class="flex justify-between items-center mb-4 text-green-600">
-                    <h3 class="text-[10px] font-black uppercase tracking-widest italic">Sabtu, 14 Mar (Bukber)</h3>
-                    <span class="text-[8px] font-black bg-green-50 px-2 py-1 rounded">AGENDA 1</span>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div onclick="tampilkanDaftar('hadir14')" class="bg-green-50 p-4 rounded-2xl cursor-pointer active-scale hover:bg-green-100 transition border border-green-100">
-                        <span id="statHadir14" class="text-3xl font-black text-green-600 block">0</span>
-                        <span class="text-[9px] font-bold text-green-700 uppercase">Hadir</span>
-                    </div>
-                    <div onclick="tampilkanDaftar('tidak14')" class="bg-red-50 p-4 rounded-2xl cursor-pointer active-scale hover:bg-red-100 transition border border-red-100">
-                        <span id="statTidak14" class="text-3xl font-black text-red-500 block">0</span>
-                        <span class="text-[9px] font-bold text-red-700 uppercase">Berhalangan</span>
-                    </div>
-                </div>
+            <div>
+              <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Device ID</label>
+              <div id="deviceInfo" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-xs font-mono text-slate-500 break-all">-</div>
             </div>
+          </div>
 
-            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
-                <div class="flex justify-between items-center mb-4 text-blue-600">
-                    <h3 class="text-[10px] font-black uppercase tracking-widest italic">Minggu, 15 Mar (Mubes)</h3>
-                    <span class="text-[8px] font-black bg-blue-50 px-2 py-1 rounded">AGENDA 2</span>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div onclick="tampilkanDaftar('hadir15')" class="bg-blue-50 p-4 rounded-2xl cursor-pointer active-scale hover:bg-blue-100 transition border border-blue-100">
-                        <span id="statHadir15" class="text-3xl font-black text-blue-600 block">0</span>
-                        <span class="text-[9px] font-bold text-blue-700 uppercase">Hadir</span>
-                    </div>
-                    <div onclick="tampilkanDaftar('tidak15')" class="bg-red-50 p-4 rounded-2xl cursor-pointer active-scale hover:bg-red-100 transition border border-red-100">
-                        <span id="statTidak15" class="text-3xl font-black text-red-500 block">0</span>
-                        <span class="text-[9px] font-bold text-red-700 uppercase">Berhalangan</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Panel Pengiriman -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="lg:col-span-2 bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Nama Panitia</label>
-                        <input id="namaPanitia" type="text" placeholder="Isi nama panitia..." class="w-full bg-slate-50 border-none rounded-2xl p-4 text-sm focus:ring-2 focus:ring-blue-500 outline-none" oninput="simpanNamaPanitia(true)" />
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Device ID</label>
-                        <div id="deviceInfo" class="w-full bg-slate-50 rounded-2xl p-4 text-xs font-mono text-slate-500 break-all">-</div>
-                    </div>
-                </div>
-
-                <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Draf Pesan</label>
-                <textarea id="teksPesan" rows="8" class="w-full bg-slate-50 border-none rounded-2xl p-4 text-sm leading-relaxed mb-4 focus:ring-2 focus:ring-blue-500 outline-none">Salam Alumni FT UNP. Halo {{nama}}.
+          <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Draf Pesan</label>
+          <textarea id="teksPesan" rows="8" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-sm leading-relaxed mb-4 focus:ring-2 focus:ring-blue-500 outline-none">Salam Alumni FT UNP. Halo {{nama}}.
 
 Kami mengundang Kamu pada rangkaian acara IKATP:
 
@@ -99,810 +165,1069 @@ Kami mengundang Kamu pada rangkaian acara IKATP:
 
 Konfirmasi kehadiran Kamu di:
 https://databasealumniftunp.netlify.app/
+Agar panitia bisa menyiapkan Menu berbuka puasa serta hal lainnya
 
+Agar bisa mengakses mengakses web tersebut berikut hal hal yang harus dilakukan:
+1. Login dulu ke web di atas kemudian masuk ke akun masing masing
 Tutorial Login:
 https://drive.google.com/file/d/12TrXvSG2QKb28vAqzrfAhJNNGPAFMokz/view?usp=sharing
 
+2. Setelah login kemudian berikan konfirmasi kehadiran anda 
 Tutorial RSVP:
 https://i.ibb.co.com/HLh8wkdg/undangan-sender.png</textarea>
 
-                <button onclick="muatData()" id="btnMuat" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-black active-scale transition shadow-xl uppercase text-xs tracking-widest">
-                    Refresh Antrean Pengiriman
-                </button>
-            </div>
-
-            <div class="space-y-4">
-                <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 text-center">
-                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 block">Belum Ada Respon</span>
-                    <span id="statBelum" class="text-5xl font-black text-blue-600">0</span>
-                    <p class="text-[9px] font-bold text-slate-400 mt-2 uppercase tracking-tighter italic">Belum RSVP dua agenda</p>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 text-center">
-                        <span class="text-[9px] font-black text-amber-500 uppercase tracking-widest block">Diproses</span>
-                        <span id="statDiprosesWa" class="text-3xl font-black text-amber-500">0</span>
-                    </div>
-                    <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 text-center">
-                        <span class="text-[9px] font-black text-green-600 uppercase tracking-widest block">Terkirim</span>
-                        <span id="statTerkirimWa" class="text-3xl font-black text-green-600">0</span>
-                    </div>
-                </div>
-            </div>
+          <button onclick="muatData()" id="btnMuat" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-4 rounded-2xl font-black active-scale transition shadow-xl uppercase text-xs tracking-widest">
+            Refresh Antrean Pengiriman
+          </button>
         </div>
 
-        <!-- Daftar Penerima -->
-        <div id="areaTabel" class="hidden space-y-4 animate-fade">
-            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 sticky top-[72px] md:relative md:top-0 z-40 flex justify-between items-center gap-4">
-                <div class="flex items-center gap-3 min-w-0">
-                    <span id="labelStatistik" class="text-[10px] font-black text-blue-600 bg-blue-50 px-3 py-1.5 rounded-lg whitespace-nowrap uppercase tracking-tighter">
-                        Sesi: 0 / 50
-                    </span>
-                    <div class="w-24 md:w-48 h-2 bg-slate-100 rounded-full overflow-hidden">
-                        <div id="barProgres" class="h-full bg-blue-600 transition-all duration-700" style="width: 0%"></div>
-                    </div>
-                </div>
-                <div class="flex gap-2">
-                    <button onclick="halamanPrev()" class="px-4 py-2 bg-slate-100 rounded-xl text-[10px] font-black active-scale">PREV</button>
-                    <button onclick="halamanNext()" class="px-4 py-2 bg-slate-100 rounded-xl text-[10px] font-black active-scale">NEXT</button>
-                </div>
+        <div class="space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div class="bg-white p-5 rounded-[28px] shadow-sm border border-slate-200 text-center">
+              <span class="text-[9px] font-black text-amber-500 uppercase tracking-widest block">WA Sedang Diproses</span>
+              <span id="statDiprosesWa" class="text-3xl font-black text-amber-500">0</span>
+              <p class="text-[8px] mt-2 font-bold uppercase tracking-tight text-slate-400">
+                Sedang di-handle panitia
+              </p>
             </div>
+            <div class="bg-white p-5 rounded-[28px] shadow-sm border border-slate-200 text-center">
+              <span class="text-[9px] font-black text-green-600 uppercase tracking-widest block">WA Sudah Terkirim</span>
+              <span id="statTerkirimWa" class="text-3xl font-black text-green-600">0</span>
+              <p class="text-[8px] mt-2 font-bold uppercase tracking-tight text-slate-400">
+                Sudah dikirim & dikonfirmasi
+              </p>
+            </div>
+          </div>
 
-            <div id="isiTabelMobile" class="space-y-3"></div>
+          <div class="bg-white p-5 rounded-[28px] shadow-sm border border-slate-200">
+            <div class="flex items-center justify-between gap-3">
+              <div>
+                <div class="text-[10px] font-black uppercase tracking-[0.24em] text-slate-400">Progress Sesi</div>
+                <div id="labelStatistik" class="mt-2 text-xl font-black text-blue-600">Sesi: 0 / 50</div>
+              </div>
+              <div class="text-right">
+                <div class="text-[10px] font-black uppercase tracking-[0.24em] text-slate-400">Limit Device</div>
+                <div class="mt-2 text-xl font-black text-slate-800">50</div>
+              </div>
+            </div>
+            <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden mt-4">
+              <div id="barProgres" class="h-full bg-blue-600 transition-all duration-700" style="width:0%"></div>
+            </div>
+          </div>
         </div>
-    </main>
+      </div>
+    </section>
 
-    <!-- Toast -->
-    <div id="toastPesan" class="fixed top-4 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-6 py-3 rounded-full text-xs font-bold shadow-2xl z-[150] transition-all duration-300 opacity-0 pointer-events-none translate-y-[-20px]">
-        Pesan Notifikasi
+    <!-- Filter Premium -->
+    <section class="bg-white rounded-[30px] border border-slate-200 shadow-sm p-5 md:p-6 space-y-5">
+      <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-3">
+        <div>
+          <h3 class="text-lg md:text-xl font-black text-slate-900">Pencarian & Filter Data</h3>
+          <p class="text-sm text-slate-500">Cari alumni berdasarkan nama atau nomor, lalu sempitkan target pengiriman.</p>
+        </div>
+        <button onclick="resetFilter()" class="px-4 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-black uppercase tracking-widest active-scale">
+          Reset Filter
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
+        <div class="xl:col-span-2">
+          <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Cari Nama / HP</label>
+          <input id="searchInput" type="text" placeholder="Misal: Alhamdi / 62812..." class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500" oninput="applyFiltersAndRender()" />
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Status WA</label>
+          <select id="filterStatusWa" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500" onchange="applyFiltersAndRender()">
+            <option value="all">Semua Status</option>
+            <option value="antrean">Antrean</option>
+            <option value="diproses">Diproses</option>
+            <option value="terkirim">Terkirim</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Status RSVP</label>
+          <select id="filterRsvp" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500" onchange="applyFiltersAndRender()">
+            <option value="all">Semua RSVP</option>
+            <option value="belum_dua">Belum isi 2 agenda</option>
+            <option value="hadir_min_satu">Hadir minimal 1 agenda</option>
+            <option value="tidak_min_satu">Berhalangan minimal 1 agenda</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Urutkan</label>
+          <select id="sortMode" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500" onchange="applyFiltersAndRender()">
+            <option value="prioritas">Prioritas Operasional</option>
+            <option value="nama_asc">Nama A-Z</option>
+            <option value="nama_desc">Nama Z-A</option>
+            <option value="status">Status WA</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap gap-3">
+        <label class="inline-flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 cursor-pointer">
+          <input id="filterOnlyDuplicate" type="checkbox" class="rounded" onchange="applyFiltersAndRender()" />
+          <span class="text-sm font-bold text-slate-700">Tampilkan hanya HP ganda</span>
+        </label>
+
+        <label class="inline-flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 cursor-pointer">
+          <input id="filterOnlyPendingLocal" type="checkbox" class="rounded" onchange="applyFiltersAndRender()" />
+          <span class="text-sm font-bold text-slate-700">Tampilkan lock milik device ini</span>
+        </label>
+
+        <div class="inline-flex items-center gap-2 bg-blue-50 text-blue-700 rounded-2xl px-4 py-3">
+          <span class="text-[10px] font-black uppercase tracking-widest">Data Tampil</span>
+          <span id="filteredInfo" class="text-sm font-black">0 / 0</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tabel dan Kartu -->
+    <section id="areaTabel" class="hidden space-y-4 animate-fade">
+
+      <!-- Desktop Table -->
+      <div class="hidden xl:block bg-white rounded-[30px] border border-slate-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+          <div>
+            <h3 class="text-lg font-black text-slate-900">Tabel Operasional Pengiriman</h3>
+            <p class="text-sm text-slate-500">Mode desktop untuk monitoring lebih cepat.</p>
+          </div>
+          <div class="text-right">
+            <div class="text-[10px] font-black uppercase tracking-widest text-slate-400">Halaman</div>
+            <div id="desktopPageInfo" class="text-sm font-black text-slate-700">1</div>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full min-w-[1200px]">
+            <thead class="bg-slate-50 border-b border-slate-200">
+              <tr class="text-left text-[11px] uppercase tracking-widest text-slate-500">
+                <th class="px-5 py-4 font-black">No</th>
+                <th class="px-5 py-4 font-black">Nama</th>
+                <th class="px-5 py-4 font-black">HP</th>
+                <th class="px-5 py-4 font-black">RSVP Bukber</th>
+                <th class="px-5 py-4 font-black">RSVP Mubes</th>
+                <th class="px-5 py-4 font-black">Status WA</th>
+                <th class="px-5 py-4 font-black">Info</th>
+                <th class="px-5 py-4 font-black">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="desktopTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Mobile / Tablet Cards -->
+      <div>
+        <div class="flex justify-between items-center gap-4 mb-3">
+          <div>
+            <h3 class="text-lg font-black text-slate-900">Daftar Target Pengiriman</h3>
+            <p class="text-sm text-slate-500">Mode kartu untuk mobile dan tablet.</p>
+          </div>
+          <div class="hidden md:flex gap-2">
+            <button onclick="halamanPrev()" class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black active-scale">PREV</button>
+            <button onclick="halamanNext()" class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black active-scale">NEXT</button>
+          </div>
+        </div>
+
+        <div id="isiTabelMobile" class="space-y-3"></div>
+
+        <div class="flex md:hidden justify-between gap-2 mt-4">
+          <button onclick="halamanPrev()" class="flex-1 px-4 py-3 bg-white border border-slate-200 rounded-2xl text-[10px] font-black active-scale">PREV</button>
+          <button onclick="halamanNext()" class="flex-1 px-4 py-3 bg-white border border-slate-200 rounded-2xl text-[10px] font-black active-scale">NEXT</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Toast -->
+  <div id="toastPesan" class="fixed top-4 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-6 py-3 rounded-full text-xs font-bold shadow-2xl z-[150] transition-all duration-300 opacity-0 pointer-events-none translate-y-[-20px]">
+    Pesan Notifikasi
+  </div>
+
+  <!-- Modal RSVP -->
+  <div id="modalDaftar" class="fixed inset-0 bg-slate-900/80 hidden items-center justify-center z-[100] p-4 backdrop-blur-sm">
+    <div class="bg-white rounded-[40px] w-full max-w-lg max-h-[80vh] flex flex-col shadow-2xl overflow-hidden">
+      <div class="p-8 border-b flex justify-between items-center">
+        <h3 id="judulModal" class="font-black text-slate-900 uppercase text-xs tracking-widest italic">Daftar Konfirmasi</h3>
+        <button onclick="tutupModal()" class="text-slate-400 p-2 active-scale">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <div class="p-6 overflow-y-auto smooth-scroll flex-1 bg-slate-50">
+        <ul id="listNama" class="space-y-2"></ul>
+      </div>
+      <div class="p-6 bg-white border-t">
+        <button onclick="tutupModal()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-black text-xs active-scale uppercase tracking-widest">
+          Tutup Jendela
+        </button>
+      </div>
     </div>
+  </div>
 
-    <!-- Modal RSVP -->
-    <div id="modalDaftar" class="fixed inset-0 bg-slate-900/80 hidden items-center justify-center z-[100] p-4 backdrop-blur-sm">
-        <div class="bg-white rounded-[40px] w-full max-w-lg max-h-[80vh] flex flex-col shadow-2xl overflow-hidden">
-            <div class="p-8 border-b flex justify-between items-center">
-                <h3 id="judulModal" class="font-black text-slate-900 uppercase text-xs tracking-widest italic">Daftar Konfirmasi</h3>
-                <button onclick="tutupModal()" class="text-slate-400 p-2 active-scale">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbzyyqR0-U1MiPua7nM1pNCYJExCkkziKDcioEFYVH5OVKc-f_pjiVfbVBtY6grMn70o/exec";
+
+    let databaseAlumni = [];
+    let filteredAlumni = [];
+    let posisiData = 0;
+    const perHalaman = 20;
+    let counterSesi = 0;
+    const LIMIT_SESI = 50;
+
+    let sedangProses = new Set();
+    let pendingLocks = loadPendingLocks();
+    const deviceId = getOrCreateDeviceId();
+
+    function getOrCreateDeviceId() {
+      let id = localStorage.getItem("ikatp_device_id");
+      if (!id) {
+        id = "DEV-" + Math.random().toString(36).slice(2, 10).toUpperCase();
+        localStorage.setItem("ikatp_device_id", id);
+      }
+      return id;
+    }
+
+    function loadPendingLocks() {
+      try {
+        return JSON.parse(localStorage.getItem("ikatp_pending_locks") || "{}");
+      } catch (err) {
+        return {};
+      }
+    }
+
+    function savePendingLocks() {
+      localStorage.setItem("ikatp_pending_locks", JSON.stringify(pendingLocks));
+    }
+
+    function bersihkanPendingKadaluarsa() {
+      const now = Date.now();
+      Object.keys(pendingLocks).forEach(id => {
+        const item = pendingLocks[id];
+        const exp = Date.parse(item?.expiresAt || "");
+        if (!item || !item.token || isNaN(exp) || exp <= now) {
+          delete pendingLocks[id];
+        }
+      });
+      savePendingLocks();
+    }
+
+    function getPendingLock(recipientId) {
+      bersihkanPendingKadaluarsa();
+      return pendingLocks[String(recipientId)] || null;
+    }
+
+    function simpanNamaPanitia(silent = false) {
+      const nama = document.getElementById("namaPanitia").value.trim();
+      localStorage.setItem("ikatp_panitia_name", nama);
+      updatePanitiaBadge();
+      if (!silent && nama) tampilkanPesan("Nama panitia disimpan.");
+      return nama;
+    }
+
+    function updatePanitiaBadge() {
+      const nama = localStorage.getItem("ikatp_panitia_name") || "";
+      const el = document.getElementById("namaPanitiaBadge");
+      el.textContent = nama || "-";
+    }
+
+    function pastikanNamaPanitia() {
+      const nama = simpanNamaPanitia(true);
+      if (!nama) {
+        tampilkanPesan("Isi nama panitia terlebih dahulu.");
+        document.getElementById("namaPanitia").focus();
+        return "";
+      }
+      return nama;
+    }
+
+    function formatNomor(input) {
+      let bersih = String(input || "").replace(/\D/g, "");
+      if (!bersih) return "";
+      if (bersih.startsWith("0")) bersih = "62" + bersih.substring(1);
+      else if (bersih.startsWith("8")) bersih = "62" + bersih;
+      return bersih;
+    }
+
+    function escapeHtml(teks) {
+      return String(teks || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function normalisasiRSVP(nilai) {
+      const v = String(nilai || "-").trim().toLowerCase();
+
+      if (!v || v === "-") return "belum";
+
+      if (
+        v.includes("berhalangan") ||
+        v.includes("tidak hadir") ||
+        v.includes("tdk hadir") ||
+        v.includes("absen") ||
+        v.includes("tidak bisa") ||
+        v === "tidak"
+      ) return "tidak";
+
+      if (v.includes("hadir")) return "hadir";
+
+      return "lainnya";
+    }
+
+    function ambilNama(item) {
+      return item.Nama || item.nama || item["Nama Lengkap"] || item["nama lengkap"] || "Alumni";
+    }
+
+    function ambilHP(item) {
+      return formatNomor(item.HP || item.hp || item["No HP"] || item["no hp"] || item["Nomor HP"] || "");
+    }
+
+    function ambilStatusWA(item) {
+      return String(item.Status_WA || item.status_wa || item["Status WA"] || item["status wa"] || "Antrean").trim();
+    }
+
+    function labelStatus(statusAsli) {
+      const s = normalisasiRSVP(statusAsli);
+      if (s === "hadir") return "Hadir";
+      if (s === "tidak") return "Berhalangan";
+      if (s === "belum") return "-";
+      return String(statusAsli || "-");
+    }
+
+    function getBadgeClass(statusNormal, tipeHari) {
+      if (statusNormal === "hadir") {
+        return tipeHari === "14"
+          ? "bg-green-100 text-green-700"
+          : "bg-blue-100 text-blue-700";
+      }
+      if (statusNormal === "tidak") {
+        return "bg-red-100 text-red-700";
+      }
+      if (statusNormal === "belum") {
+        return "bg-slate-100 text-slate-400";
+      }
+      return "bg-amber-100 text-amber-700";
+    }
+
+    function getStatusWaClass(status) {
+      const s = String(status || "").toLowerCase();
+      if (s === "terkirim") return "bg-green-100 text-green-700";
+      if (s === "diproses") return "bg-amber-100 text-amber-700";
+      return "bg-slate-100 text-slate-500";
+    }
+
+    function rankingStatusWa(item) {
+      const s = ambilStatusWA(item).toLowerCase();
+      if (s === "antrean") return 0;
+      if (s === "diproses") return 1;
+      if (s === "terkirim") return 2;
+      return 3;
+    }
+
+    function urutkanDataDefault(data) {
+      return [...data].sort((a, b) => {
+        const aRank = rankingStatusWa(a);
+        const bRank = rankingStatusWa(b);
+        if (aRank !== bRank) return aRank - bRank;
+
+        const aBelum = normalisasiRSVP(a.RSVP_14) === "belum" && normalisasiRSVP(a.RSVP_15) === "belum";
+        const bBelum = normalisasiRSVP(b.RSVP_14) === "belum" && normalisasiRSVP(b.RSVP_15) === "belum";
+
+        if (aBelum && !bBelum) return -1;
+        if (!aBelum && bBelum) return 1;
+
+        return ambilNama(a).localeCompare(ambilNama(b), "id");
+      });
+    }
+
+    async function fetchJson(url, options = {}) {
+      const response = await fetch(url, options);
+      const text = await response.text();
+      try {
+        return JSON.parse(text);
+      } catch (err) {
+        throw new Error("Response backend tidak valid.");
+      }
+    }
+
+    async function postAction(payload) {
+      return fetchJson(API_URL, {
+        method: "POST",
+        body: JSON.stringify(payload)
+      });
+    }
+
+    function syncPendingDenganServer(dataServer) {
+      const map = new Map(dataServer.map(item => [String(item.Recipient_ID), item]));
+      Object.keys(pendingLocks).forEach(id => {
+        const server = map.get(String(id));
+        const pending = pendingLocks[id];
+        const exp = Date.parse(pending?.expiresAt || "");
+
+        if (!server) {
+          delete pendingLocks[id];
+          return;
+        }
+
+        const serverStatus = ambilStatusWA(server).toLowerCase();
+        if (serverStatus !== "diproses") {
+          delete pendingLocks[id];
+          return;
+        }
+
+        if (isNaN(exp) || exp <= Date.now()) {
+          delete pendingLocks[id];
+        }
+      });
+      savePendingLocks();
+    }
+
+    function hitungDanTampilkanStatistik(data) {
+      let h14 = 0, t14 = 0, h15 = 0, t15 = 0, belum = 0;
+      let diprosesWa = 0, terkirimWa = 0;
+
+      data.forEach(item => {
+        const r14 = normalisasiRSVP(item.RSVP_14);
+        const r15 = normalisasiRSVP(item.RSVP_15);
+
+        if (r14 === "hadir") h14++;
+        else if (r14 === "tidak") t14++;
+
+        if (r15 === "hadir") h15++;
+        else if (r15 === "tidak") t15++;
+
+        if (r14 === "belum" && r15 === "belum") belum++;
+
+        const statusWa = ambilStatusWA(item).toLowerCase();
+        if (statusWa === "diproses") diprosesWa++;
+        if (statusWa === "terkirim") terkirimWa++;
+      });
+
+      document.getElementById("statHadir14").innerText = h14;
+      document.getElementById("statTidak14").innerText = t14;
+      document.getElementById("statHadir15").innerText = h15;
+      document.getElementById("statTidak15").innerText = t15;
+      document.getElementById("statBelum").innerText = belum;
+      document.getElementById("statDiprosesWa").innerText = diprosesWa;
+      document.getElementById("statTerkirimWa").innerText = terkirimWa;
+    }
+
+    async function muatData() {
+      const btn = document.getElementById("btnMuat");
+      btn.innerText = "SINKRONISASI...";
+      btn.disabled = true;
+      document.body.style.opacity = "0.7";
+
+      try {
+        bersihkanPendingKadaluarsa();
+        const hasil = await fetchJson(API_URL);
+
+        if (hasil.error) throw new Error(hasil.error);
+        if (!Array.isArray(hasil)) throw new Error("Format data backend tidak valid.");
+
+        syncPendingDenganServer(hasil);
+        databaseAlumni = urutkanDataDefault(hasil);
+        hitungDanTampilkanStatistik(databaseAlumni);
+
+        posisiData = 0;
+        applyFiltersAndRender();
+        document.getElementById("areaTabel").classList.remove("hidden");
+      } catch (err) {
+        console.error(err);
+        tampilkanPesan("Gagal memuat data: " + err.message);
+      } finally {
+        btn.innerText = "Refresh Antrean Pengiriman";
+        btn.disabled = false;
+        document.body.style.opacity = "1";
+      }
+    }
+
+    function updateProgress() {
+      document.getElementById("labelStatistik").innerText = `Sesi: ${counterSesi} / ${LIMIT_SESI}`;
+      document.getElementById("barProgres").style.width = `${(counterSesi / LIMIT_SESI) * 100}%`;
+    }
+
+    function formatWaktuSingkat(iso) {
+      if (!iso) return "-";
+      const d = new Date(iso);
+      if (isNaN(d)) return "-";
+      return d.toLocaleString("id-ID", {
+        day: "2-digit",
+        month: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
+
+    function getFilteredData() {
+      const search = (document.getElementById("searchInput")?.value || "").trim().toLowerCase();
+      const filterStatusWa = document.getElementById("filterStatusWa")?.value || "all";
+      const filterRsvp = document.getElementById("filterRsvp")?.value || "all";
+      const sortMode = document.getElementById("sortMode")?.value || "prioritas";
+      const onlyDuplicate = document.getElementById("filterOnlyDuplicate")?.checked || false;
+      const onlyPendingLocal = document.getElementById("filterOnlyPendingLocal")?.checked || false;
+
+      let data = [...databaseAlumni];
+
+      data = data.filter(item => {
+        const nama = ambilNama(item).toLowerCase();
+        const hp = ambilHP(item).toLowerCase();
+        const statusWa = ambilStatusWA(item).toLowerCase();
+        const r14 = normalisasiRSVP(item.RSVP_14);
+        const r15 = normalisasiRSVP(item.RSVP_15);
+        const pending = getPendingLock(item.Recipient_ID);
+
+        const passSearch = !search || nama.includes(search) || hp.includes(search);
+
+        const passStatusWa = filterStatusWa === "all" || statusWa === filterStatusWa;
+
+        let passRsvp = true;
+        if (filterRsvp === "belum_dua") {
+          passRsvp = r14 === "belum" && r15 === "belum";
+        } else if (filterRsvp === "hadir_min_satu") {
+          passRsvp = r14 === "hadir" || r15 === "hadir";
+        } else if (filterRsvp === "tidak_min_satu") {
+          passRsvp = r14 === "tidak" || r15 === "tidak";
+        }
+
+        const passDuplicate = !onlyDuplicate || Number(item.Duplicate_HP_Count || 0) > 1;
+        const passPendingLocal = !onlyPendingLocal || !!pending;
+
+        return passSearch && passStatusWa && passRsvp && passDuplicate && passPendingLocal;
+      });
+
+      if (sortMode === "nama_asc") {
+        data.sort((a, b) => ambilNama(a).localeCompare(ambilNama(b), "id"));
+      } else if (sortMode === "nama_desc") {
+        data.sort((a, b) => ambilNama(b).localeCompare(ambilNama(a), "id"));
+      } else if (sortMode === "status") {
+        data.sort((a, b) => rankingStatusWa(a) - rankingStatusWa(b) || ambilNama(a).localeCompare(ambilNama(b), "id"));
+      } else {
+        data = urutkanDataDefault(data);
+      }
+
+      return data;
+    }
+
+    function applyFiltersAndRender() {
+      filteredAlumni = getFilteredData();
+
+      const maxPageStart = Math.max(0, Math.floor((Math.max(filteredAlumni.length - 1, 0)) / perHalaman) * perHalaman);
+      if (posisiData > maxPageStart) posisiData = maxPageStart;
+
+      document.getElementById("statFiltered").innerText = filteredAlumni.length;
+      document.getElementById("filteredInfo").innerText = `${filteredAlumni.length} / ${databaseAlumni.length}`;
+
+      renderTabel();
+    }
+
+    function resetFilter() {
+      document.getElementById("searchInput").value = "";
+      document.getElementById("filterStatusWa").value = "all";
+      document.getElementById("filterRsvp").value = "all";
+      document.getElementById("sortMode").value = "prioritas";
+      document.getElementById("filterOnlyDuplicate").checked = false;
+      document.getElementById("filterOnlyPendingLocal").checked = false;
+      posisiData = 0;
+      applyFiltersAndRender();
+      tampilkanPesan("Filter berhasil direset.");
+    }
+
+    function buatBadgeRsvpDesktop(statusAsli, tipeHari) {
+      return `<span class="text-[10px] font-black px-2 py-1 rounded-lg uppercase ${getBadgeClass(normalisasiRSVP(statusAsli), tipeHari)}">${escapeHtml(labelStatus(statusAsli))}</span>`;
+    }
+
+    function renderTabel() {
+      const wadahMobile = document.getElementById("isiTabelMobile");
+      const tableBody = document.getElementById("desktopTableBody");
+      wadahMobile.innerHTML = "";
+      tableBody.innerHTML = "";
+
+      const dataHalaman = filteredAlumni.slice(posisiData, posisiData + perHalaman);
+      const currentPage = filteredAlumni.length ? Math.floor(posisiData / perHalaman) + 1 : 0;
+      const totalPages = filteredAlumni.length ? Math.ceil(filteredAlumni.length / perHalaman) : 0;
+      document.getElementById("desktopPageInfo").innerText = `${currentPage} / ${totalPages || 0}`;
+
+      if (dataHalaman.length === 0) {
+        wadahMobile.innerHTML = `
+          <div class="bg-white p-8 rounded-[28px] shadow-sm border border-slate-200 text-center text-sm text-slate-500">
+            Tidak ada data yang sesuai dengan filter.
+          </div>
+        `;
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="8" class="px-5 py-10 text-center text-slate-500 text-sm">Tidak ada data yang sesuai dengan filter.</td>
+          </tr>
+        `;
+        return;
+      }
+
+      dataHalaman.forEach((row, idx) => {
+        const recipientId = String(row.Recipient_ID || "");
+        const nama = ambilNama(row);
+        const hp = ambilHP(row);
+
+        const r14Asli = row.RSVP_14 || "-";
+        const r15Asli = row.RSVP_15 || "-";
+        const r14 = normalisasiRSVP(r14Asli);
+        const r15 = normalisasiRSVP(r15Asli);
+
+        const statusWA = ambilStatusWA(row);
+        const statusLower = statusWA.toLowerCase();
+        const pending = getPendingLock(recipientId);
+        const isOwnPending = !!pending && statusLower === "diproses";
+        const isBusy = sedangProses.has(recipientId);
+
+        let infoStatus = statusWA;
+        if (statusLower === "diproses") {
+          infoStatus = `Diproses${row.Lock_By ? " oleh " + row.Lock_By : ""}${row.Lock_Expire_At ? " • s.d. " + formatWaktuSingkat(row.Lock_Expire_At) : ""}`;
+        }
+        if (statusLower === "terkirim") {
+          infoStatus = `Terkirim${row.Sent_By ? " oleh " + row.Sent_By : ""}${row.Sent_At ? " • " + formatWaktuSingkat(row.Sent_At) : ""}`;
+        }
+
+        const disabledSend = !hp || isBusy || statusLower === "terkirim" || (statusLower === "diproses" && !isOwnPending);
+        const warningDup = Number(row.Duplicate_HP_Count || 0) > 1
+          ? `<span class="text-[8px] font-black px-2 py-1 rounded bg-rose-50 text-rose-600 uppercase">HP Ganda x${escapeHtml(row.Duplicate_HP_Count)}</span>`
+          : "";
+
+        // Mobile Card
+        const card = document.createElement("div");
+        card.className = `p-5 rounded-[28px] border transition-all ${
+          statusLower === "terkirim" ? "bg-slate-50 opacity-80" : "bg-white shadow-sm border-slate-200"
+        }`;
+
+        card.innerHTML = `
+          <div class="flex justify-between items-start mb-4 gap-4">
+            <div class="max-w-[68%]">
+              <div class="flex flex-wrap items-center gap-2">
+                <h4 class="font-black text-slate-800 text-sm leading-tight uppercase italic">${escapeHtml(nama)}</h4>
+                ${warningDup}
+              </div>
+              <p class="text-[9px] font-mono text-slate-400 mt-1 tracking-widest">${escapeHtml(hp || "-")}</p>
+            </div>
+            <div class="flex flex-col gap-1 items-end">
+              <span class="text-[7px] font-black px-2 py-0.5 rounded uppercase ${getBadgeClass(r14, "14")}">
+                Sab: ${escapeHtml(labelStatus(r14Asli))}
+              </span>
+              <span class="text-[7px] font-black px-2 py-0.5 rounded uppercase ${getBadgeClass(r15, "15")}">
+                Min: ${escapeHtml(labelStatus(r15Asli))}
+              </span>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2 mb-4">
+            <span class="text-[8px] font-black px-2 py-1 rounded uppercase ${getStatusWaClass(statusWA)}">
+              ${escapeHtml(infoStatus)}
+            </span>
+          </div>
+
+          ${
+            isOwnPending
+              ? `
+                <div class="space-y-2">
+                  <button onclick="bukaWhatsappUlang('${recipientId}')" class="w-full text-center py-3 rounded-2xl text-[10px] font-black shadow-md active-scale transition-all bg-blue-600 text-white">
+                    BUKA WA LAGI
+                  </button>
+                  <div class="grid grid-cols-2 gap-2">
+                    <button onclick="konfirmasiKirim('${recipientId}')" ${isBusy ? "disabled" : ""} class="text-center py-3 rounded-2xl text-[10px] font-black shadow-md active-scale transition-all ${isBusy ? "bg-slate-100 text-slate-300" : "bg-green-600 text-white"}">
+                      SUDAH TERKIRIM
+                    </button>
+                    <button onclick="batalkanKirim('${recipientId}')" ${isBusy ? "disabled" : ""} class="text-center py-3 rounded-2xl text-[10px] font-black shadow-md active-scale transition-all ${isBusy ? "bg-slate-100 text-slate-300" : "bg-red-600 text-white"}">
+                      BATALKAN
+                    </button>
+                  </div>
+                </div>
+              `
+              : `
+                <button onclick="reserveKirim('${recipientId}')" ${disabledSend ? "disabled" : ""} class="w-full text-center py-3 rounded-2xl text-[10px] font-black shadow-md active-scale transition-all ${
+                  disabledSend ? "bg-slate-100 text-slate-300 pointer-events-none" : "bg-blue-600 text-white"
+                }">
+                  ${isBusy ? "MEMPROSES..." : "AMBIL & KIRIM WA"}
                 </button>
-            </div>
-            <div class="p-6 overflow-y-auto smooth-scroll flex-1 bg-slate-50">
-                <ul id="listNama" class="space-y-2"></ul>
-            </div>
-            <div class="p-6 bg-white border-t">
-                <button onclick="tutupModal()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-black text-xs active-scale uppercase tracking-widest">
-                    Tutup Jendela
-                </button>
-            </div>
-        </div>
-    </div>
+              `
+          }
+        `;
+        wadahMobile.appendChild(card);
 
-    <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbwc2Y66TdJjM2Mub6O3Qus_G7Raj4ul4mVRoSXjUKHoX-7jo8IfYu_qESoq6rXKk1k/exec";
-
-        let databaseAlumni = [];
-        let posisiData = 0;
-        const perHalaman = 20;
-        let counterSesi = 0;
-        const LIMIT_SESI = 50;
-
-        let sedangProses = new Set();
-        let pendingLocks = loadPendingLocks();
-        const deviceId = getOrCreateDeviceId();
-
-        function getOrCreateDeviceId() {
-            let id = localStorage.getItem("ikatp_device_id");
-            if (!id) {
-                id = "DEV-" + Math.random().toString(36).slice(2, 10).toUpperCase();
-                localStorage.setItem("ikatp_device_id", id);
-            }
-            return id;
-        }
-
-        function loadPendingLocks() {
-            try {
-                return JSON.parse(localStorage.getItem("ikatp_pending_locks") || "{}");
-            } catch (err) {
-                return {};
-            }
-        }
-
-        function savePendingLocks() {
-            localStorage.setItem("ikatp_pending_locks", JSON.stringify(pendingLocks));
-        }
-
-        function bersihkanPendingKadaluarsa() {
-            const now = Date.now();
-            Object.keys(pendingLocks).forEach(id => {
-                const item = pendingLocks[id];
-                const exp = Date.parse(item?.expiresAt || "");
-                if (!item || !item.token || isNaN(exp) || exp <= now) {
-                    delete pendingLocks[id];
-                }
-            });
-            savePendingLocks();
-        }
-
-        function getPendingLock(recipientId) {
-            bersihkanPendingKadaluarsa();
-            return pendingLocks[String(recipientId)] || null;
-        }
-
-        function simpanNamaPanitia(silent = false) {
-            const nama = document.getElementById("namaPanitia").value.trim();
-            localStorage.setItem("ikatp_panitia_name", nama);
-            if (!silent && nama) tampilkanPesan("Nama panitia disimpan.");
-            return nama;
-        }
-
-        function pastikanNamaPanitia() {
-            const nama = simpanNamaPanitia(true);
-            if (!nama) {
-                tampilkanPesan("Isi nama panitia terlebih dahulu.");
-                document.getElementById("namaPanitia").focus();
-                return "";
-            }
-            return nama;
-        }
-
-        function formatNomor(input) {
-            let bersih = String(input || "").replace(/\D/g, "");
-            if (!bersih) return "";
-            if (bersih.startsWith("0")) bersih = "62" + bersih.substring(1);
-            else if (bersih.startsWith("8")) bersih = "62" + bersih;
-            return bersih;
-        }
-
-        function escapeHtml(teks) {
-            return String(teks || "")
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-        }
-
-        function normalisasiRSVP(nilai) {
-            const v = String(nilai || "-").trim().toLowerCase();
-
-            if (!v || v === "-") return "belum";
-
-            if (
-                v.includes("berhalangan") ||
-                v.includes("tidak hadir") ||
-                v.includes("tdk hadir") ||
-                v.includes("absen") ||
-                v.includes("tidak bisa") ||
-                v === "tidak"
-            ) return "tidak";
-
-            if (v.includes("hadir")) return "hadir";
-
-            return "lainnya";
-        }
-
-        function ambilNama(item) {
-            return item.Nama || item.nama || item["Nama Lengkap"] || item["nama lengkap"] || "Alumni";
-        }
-
-        function ambilHP(item) {
-            return formatNomor(item.HP || item.hp || item["No HP"] || item["no hp"] || item["Nomor HP"] || "");
-        }
-
-        function ambilStatusWA(item) {
-            return String(item.Status_WA || item.status_wa || item["Status WA"] || item["status wa"] || "Antrean").trim();
-        }
-
-        function labelStatus(statusAsli) {
-            const s = normalisasiRSVP(statusAsli);
-            if (s === "hadir") return "Hadir";
-            if (s === "tidak") return "Berhalangan";
-            if (s === "belum") return "-";
-            return String(statusAsli || "-");
-        }
-
-        function getBadgeClass(statusNormal, tipeHari) {
-            if (statusNormal === "hadir") {
-                return tipeHari === "14"
-                    ? "bg-green-100 text-green-700"
-                    : "bg-blue-100 text-blue-700";
-            }
-            if (statusNormal === "tidak") {
-                return "bg-red-100 text-red-700";
-            }
-            if (statusNormal === "belum") {
-                return "bg-slate-100 text-slate-400";
-            }
-            return "bg-amber-100 text-amber-700";
-        }
-
-        function getStatusWaClass(status) {
-            const s = String(status || "").toLowerCase();
-            if (s === "terkirim") return "bg-green-100 text-green-700";
-            if (s === "diproses") return "bg-amber-100 text-amber-700";
-            return "bg-slate-100 text-slate-500";
-        }
-
-        function urutkanData(data) {
-            return data.sort((a, b) => {
-                const rank = val => {
-                    const s = ambilStatusWA(val).toLowerCase();
-                    if (s === "antrean") return 0;
-                    if (s === "diproses") return 1;
-                    if (s === "terkirim") return 2;
-                    return 3;
-                };
-
-                const aRank = rank(a);
-                const bRank = rank(b);
-
-                if (aRank !== bRank) return aRank - bRank;
-
-                const aBelum = normalisasiRSVP(a.RSVP_14) === "belum" && normalisasiRSVP(a.RSVP_15) === "belum";
-                const bBelum = normalisasiRSVP(b.RSVP_14) === "belum" && normalisasiRSVP(b.RSVP_15) === "belum";
-
-                if (aBelum && !bBelum) return -1;
-                if (!aBelum && bBelum) return 1;
-
-                return ambilNama(a).localeCompare(ambilNama(b), "id");
-            });
-        }
-
-        async function fetchJson(url, options = {}) {
-            const response = await fetch(url, options);
-            const text = await response.text();
-            try {
-                return JSON.parse(text);
-            } catch (err) {
-                throw new Error("Response backend tidak valid.");
-            }
-        }
-
-        async function postAction(payload) {
-            return fetchJson(API_URL, {
-                method: "POST",
-                body: JSON.stringify(payload)
-            });
-        }
-
-        function syncPendingDenganServer(dataServer) {
-            const map = new Map(dataServer.map(item => [String(item.Recipient_ID), item]));
-            Object.keys(pendingLocks).forEach(id => {
-                const server = map.get(String(id));
-                const pending = pendingLocks[id];
-                const exp = Date.parse(pending?.expiresAt || "");
-
-                if (!server) {
-                    delete pendingLocks[id];
-                    return;
-                }
-
-                const serverStatus = ambilStatusWA(server).toLowerCase();
-                if (serverStatus !== "diproses") {
-                    delete pendingLocks[id];
-                    return;
-                }
-
-                if (isNaN(exp) || exp <= Date.now()) {
-                    delete pendingLocks[id];
-                }
-            });
-            savePendingLocks();
-        }
-
-        function hitungDanTampilkanStatistik(data) {
-            let h14 = 0, t14 = 0, h15 = 0, t15 = 0, belum = 0;
-            let diprosesWa = 0, terkirimWa = 0;
-
-            data.forEach(item => {
-                const r14 = normalisasiRSVP(item.RSVP_14);
-                const r15 = normalisasiRSVP(item.RSVP_15);
-
-                if (r14 === "hadir") h14++;
-                else if (r14 === "tidak") t14++;
-
-                if (r15 === "hadir") h15++;
-                else if (r15 === "tidak") t15++;
-
-                if (r14 === "belum" && r15 === "belum") belum++;
-
-                const statusWa = ambilStatusWA(item).toLowerCase();
-                if (statusWa === "diproses") diprosesWa++;
-                if (statusWa === "terkirim") terkirimWa++;
-            });
-
-            document.getElementById("statHadir14").innerText = h14;
-            document.getElementById("statTidak14").innerText = t14;
-            document.getElementById("statHadir15").innerText = h15;
-            document.getElementById("statTidak15").innerText = t15;
-            document.getElementById("statBelum").innerText = belum;
-            document.getElementById("statDiprosesWa").innerText = diprosesWa;
-            document.getElementById("statTerkirimWa").innerText = terkirimWa;
-        }
-
-        async function muatData() {
-            const btn = document.getElementById("btnMuat");
-            btn.innerText = "SINKRONISASI...";
-            btn.disabled = true;
-            document.body.style.opacity = "0.7";
-
-            try {
-                bersihkanPendingKadaluarsa();
-                const hasil = await fetchJson(API_URL);
-
-                if (hasil.error) throw new Error(hasil.error);
-                if (!Array.isArray(hasil)) throw new Error("Format data backend tidak valid.");
-
-                syncPendingDenganServer(hasil);
-                databaseAlumni = urutkanData(hasil);
-                hitungDanTampilkanStatistik(databaseAlumni);
-
-                posisiData = 0;
-                renderTabel();
-                document.getElementById("areaTabel").classList.remove("hidden");
-            } catch (err) {
-                console.error(err);
-                tampilkanPesan("Gagal memuat data: " + err.message);
-            } finally {
-                btn.innerText = "Refresh Antrean Pengiriman";
-                btn.disabled = false;
-                document.body.style.opacity = "1";
-            }
-        }
-
-        function updateProgress() {
-            document.getElementById("labelStatistik").innerText = `Sesi: ${counterSesi} / ${LIMIT_SESI}`;
-            document.getElementById("barProgres").style.width = `${(counterSesi / LIMIT_SESI) * 100}%`;
-        }
-
-        function formatWaktuSingkat(iso) {
-            if (!iso) return "-";
-            const d = new Date(iso);
-            if (isNaN(d)) return "-";
-            return d.toLocaleString("id-ID", {
-                day: "2-digit",
-                month: "2-digit",
-                hour: "2-digit",
-                minute: "2-digit"
-            });
-        }
-
-        function renderTabel() {
-            const wadah = document.getElementById("isiTabelMobile");
-            wadah.innerHTML = "";
-
-            const dataHalaman = databaseAlumni.slice(posisiData, posisiData + perHalaman);
-
-            if (dataHalaman.length === 0) {
-                wadah.innerHTML = `
-                    <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 text-center text-sm text-slate-500">
-                        Tidak ada data untuk ditampilkan.
+        // Desktop Row
+        const tr = document.createElement("tr");
+        tr.className = "border-b border-slate-100 hover:bg-slate-50 transition";
+        tr.innerHTML = `
+          <td class="px-5 py-4 text-sm font-black text-slate-500">${posisiData + idx + 1}</td>
+          <td class="px-5 py-4">
+            <div class="font-black text-slate-800">${escapeHtml(nama)}</div>
+            ${warningDup ? `<div class="mt-2">${warningDup}</div>` : ""}
+          </td>
+          <td class="px-5 py-4 text-sm font-mono text-slate-500">${escapeHtml(hp || "-")}</td>
+          <td class="px-5 py-4">${buatBadgeRsvpDesktop(r14Asli, "14")}</td>
+          <td class="px-5 py-4">${buatBadgeRsvpDesktop(r15Asli, "15")}</td>
+          <td class="px-5 py-4">
+            <span class="text-[10px] font-black px-2 py-1 rounded-lg uppercase ${getStatusWaClass(statusWA)}">${escapeHtml(statusWA)}</span>
+          </td>
+          <td class="px-5 py-4 text-sm text-slate-500 max-w-[260px]">${escapeHtml(infoStatus)}</td>
+          <td class="px-5 py-4">
+            ${
+              isOwnPending
+                ? `
+                  <div class="flex flex-col gap-2">
+                    <button onclick="bukaWhatsappUlang('${recipientId}')" class="px-3 py-2 rounded-xl bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest">Buka WA</button>
+                    <div class="grid grid-cols-2 gap-2">
+                      <button onclick="konfirmasiKirim('${recipientId}')" ${isBusy ? "disabled" : ""} class="px-3 py-2 rounded-xl ${isBusy ? "bg-slate-100 text-slate-300" : "bg-green-600 text-white"} text-[10px] font-black uppercase tracking-widest">Confirm</button>
+                      <button onclick="batalkanKirim('${recipientId}')" ${isBusy ? "disabled" : ""} class="px-3 py-2 rounded-xl ${isBusy ? "bg-slate-100 text-slate-300" : "bg-red-600 text-white"} text-[10px] font-black uppercase tracking-widest">Cancel</button>
                     </div>
-                `;
-                return;
+                  </div>
+                `
+                : `
+                  <button onclick="reserveKirim('${recipientId}')" ${disabledSend ? "disabled" : ""} class="px-4 py-3 rounded-xl ${
+                    disabledSend ? "bg-slate-100 text-slate-300 pointer-events-none" : "bg-blue-600 text-white"
+                  } text-[10px] font-black uppercase tracking-widest">
+                    ${isBusy ? "Memproses..." : "Ambil & Kirim"}
+                  </button>
+                `
             }
+          </td>
+        `;
+        tableBody.appendChild(tr);
+      });
+    }
 
-            dataHalaman.forEach(row => {
-                const recipientId = String(row.Recipient_ID || "");
-                const nama = ambilNama(row);
-                const hp = ambilHP(row);
+    function tampilkanPesan(teks) {
+      const toast = document.getElementById("toastPesan");
+      toast.innerText = teks;
+      toast.classList.remove("opacity-0", "translate-y-[-20px]");
+      toast.classList.add("opacity-100", "translate-y-0");
+      setTimeout(() => {
+        toast.classList.add("opacity-0", "translate-y-[-20px]");
+        toast.classList.remove("opacity-100", "translate-y-0");
+      }, 3200);
+    }
 
-                const r14Asli = row.RSVP_14 || "-";
-                const r15Asli = row.RSVP_15 || "-";
-                const r14 = normalisasiRSVP(r14Asli);
-                const r15 = normalisasiRSVP(r15Asli);
+    function buatPesan(row) {
+      const draf = document.getElementById("teksPesan").value || "";
+      return draf.replace(/{{nama}}/g, ambilNama(row));
+    }
 
-                const statusWA = ambilStatusWA(row);
-                const statusLower = statusWA.toLowerCase();
-                const pending = getPendingLock(recipientId);
-                const isOwnPending = !!pending && statusLower === "diproses";
-                const isBusy = sedangProses.has(recipientId);
+    function bukaWhatsappUlang(recipientId) {
+      const row = databaseAlumni.find(r => String(r.Recipient_ID) === String(recipientId));
+      if (!row) return;
+      const hp = ambilHP(row);
+      if (!hp) {
+        tampilkanPesan("Nomor HP kosong.");
+        return;
+      }
+      const pesan = encodeURIComponent(buatPesan(row));
+      window.open(`https://wa.me/${hp}?text=${pesan}`, "_blank");
+    }
 
-                let infoStatus = statusWA;
-                if (statusLower === "diproses") {
-                    infoStatus = `Diproses${row.Lock_By ? " oleh " + row.Lock_By : ""}${row.Lock_Expire_At ? " • s.d. " + formatWaktuSingkat(row.Lock_Expire_At) : ""}`;
-                }
-                if (statusLower === "terkirim") {
-                    infoStatus = `Terkirim${row.Sent_By ? " oleh " + row.Sent_By : ""}${row.Sent_At ? " • " + formatWaktuSingkat(row.Sent_At) : ""}`;
-                }
+    async function reserveKirim(recipientId) {
+      const namaPanitia = pastikanNamaPanitia();
+      if (!namaPanitia) return;
+      if (counterSesi >= LIMIT_SESI) {
+        tampilkanPesan("Batas sesi perangkat ini sudah tercapai.");
+        return;
+      }
 
-                const disabledSend = !hp || isBusy || statusLower === "terkirim" || (statusLower === "diproses" && !isOwnPending);
+      const row = databaseAlumni.find(r => String(r.Recipient_ID) === String(recipientId));
+      if (!row) {
+        tampilkanPesan("Data target tidak ditemukan.");
+        return;
+      }
 
-                const warningDup = Number(row.Duplicate_HP_Count || 0) > 1
-                    ? `<span class="text-[8px] font-black px-2 py-1 rounded bg-rose-50 text-rose-600 uppercase">HP Ganda x${escapeHtml(row.Duplicate_HP_Count)}</span>`
-                    : "";
+      const hp = ambilHP(row);
+      if (!hp) {
+        tampilkanPesan("Nomor HP kosong atau tidak valid.");
+        return;
+      }
 
-                const card = document.createElement("div");
-                card.className = `p-5 rounded-[32px] border transition-all ${
-                    statusLower === "terkirim"
-                        ? "bg-slate-50 opacity-75"
-                        : "bg-white shadow-sm border-slate-200"
-                }`;
+      sedangProses.add(String(recipientId));
+      renderTabel();
 
-                card.innerHTML = `
-                    <div class="flex justify-between items-start mb-4 gap-4">
-                        <div class="max-w-[65%]">
-                            <h4 class="font-black text-slate-800 text-sm leading-tight uppercase italic">${escapeHtml(nama)}</h4>
-                            <p class="text-[9px] font-mono text-slate-400 mt-1 tracking-widest">${escapeHtml(hp || "-")}</p>
-                        </div>
-                        <div class="flex flex-col gap-1 items-end">
-                            <span class="text-[7px] font-black px-2 py-0.5 rounded uppercase ${getBadgeClass(r14, "14")}">
-                                Sab: ${escapeHtml(labelStatus(r14Asli))}
-                            </span>
-                            <span class="text-[7px] font-black px-2 py-0.5 rounded uppercase ${getBadgeClass(r15, "15")}">
-                                Min: ${escapeHtml(labelStatus(r15Asli))}
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="flex flex-wrap items-center gap-2 mb-4">
-                        <span class="text-[8px] font-black px-2 py-1 rounded uppercase ${getStatusWaClass(statusWA)}">
-                            ${escapeHtml(infoStatus)}
-                        </span>
-                        ${warningDup}
-                    </div>
-
-                    ${
-                        isOwnPending
-                        ? `
-                        <div class="space-y-2">
-                            <button onclick="bukaWhatsappUlang('${recipientId}')" class="w-full text-center py-3 rounded-2xl text-[10px] font-black shadow-md active-scale transition-all bg-blue-600 text-white">
-                                BUKA WA LAGI
-                            </button>
-                            <div class="grid grid-cols-2 gap-2">
-                                <button onclick="konfirmasiKirim('${recipientId}')" ${isBusy ? "disabled" : ""} class="text-center py-3 rounded-2xl text-[10px] font-black shadow-md active-scale transition-all ${isBusy ? "bg-slate-100 text-slate-300" : "bg-green-600 text-white"}">
-                                    SUDAH TERKIRIM
-                                </button>
-                                <button onclick="batalkanKirim('${recipientId}')" ${isBusy ? "disabled" : ""} class="text-center py-3 rounded-2xl text-[10px] font-black shadow-md active-scale transition-all ${isBusy ? "bg-slate-100 text-slate-300" : "bg-red-600 text-white"}">
-                                    BATALKAN
-                                </button>
-                            </div>
-                        </div>
-                        `
-                        : `
-                        <button onclick="reserveKirim('${recipientId}')" ${disabledSend ? "disabled" : ""} class="w-full text-center py-3 rounded-2xl text-[10px] font-black shadow-md active-scale transition-all ${
-                            disabledSend
-                                ? "bg-slate-100 text-slate-300 pointer-events-none"
-                                : "bg-blue-600 text-white"
-                        }">
-                            ${isBusy ? "MEMPROSES..." : "AMBIL & KIRIM WA"}
-                        </button>
-                        `
-                    }
-                `;
-
-                wadah.appendChild(card);
-            });
-        }
-
-        function tampilkanPesan(teks) {
-            const toast = document.getElementById("toastPesan");
-            toast.innerText = teks;
-            toast.classList.remove("opacity-0", "translate-y-[-20px]");
-            toast.classList.add("opacity-100", "translate-y-0");
-            setTimeout(() => {
-                toast.classList.add("opacity-0", "translate-y-[-20px]");
-                toast.classList.remove("opacity-100", "translate-y-0");
-            }, 3200);
-        }
-
-        function buatPesan(row) {
-            const draf = document.getElementById("teksPesan").value || "";
-            return draf.replace(/{{nama}}/g, ambilNama(row));
-        }
-
-        function bukaWhatsappUlang(recipientId) {
-            const row = databaseAlumni.find(r => String(r.Recipient_ID) === String(recipientId));
-            if (!row) return;
-            const hp = ambilHP(row);
-            if (!hp) {
-                tampilkanPesan("Nomor HP kosong.");
-                return;
-            }
-            const pesan = encodeURIComponent(buatPesan(row));
-            window.open(`https://wa.me/${hp}?text=${pesan}`, "_blank");
-        }
-
-        async function reserveKirim(recipientId) {
-            const namaPanitia = pastikanNamaPanitia();
-            if (!namaPanitia) return;
-            if (counterSesi >= LIMIT_SESI) {
-                tampilkanPesan("Batas sesi perangkat ini sudah tercapai.");
-                return;
-            }
-
-            const row = databaseAlumni.find(r => String(r.Recipient_ID) === String(recipientId));
-            if (!row) {
-                tampilkanPesan("Data target tidak ditemukan.");
-                return;
-            }
-
-            const hp = ambilHP(row);
-            if (!hp) {
-                tampilkanPesan("Nomor HP kosong atau tidak valid.");
-                return;
-            }
-
-            sedangProses.add(String(recipientId));
-            renderTabel();
-
-            try {
-                const hasil = await postAction({
-                    action: "reserve",
-                    recipientId: String(recipientId),
-                    panitiaName: namaPanitia,
-                    deviceId: deviceId
-                });
-
-                if (!hasil.success) {
-                    tampilkanPesan(hasil.message || hasil.error || "Gagal mengambil lock.");
-                    await muatData();
-                    return;
-                }
-
-                pendingLocks[String(recipientId)] = {
-                    token: hasil.token,
-                    expiresAt: hasil.expiresAt,
-                    hp: hp,
-                    nama: ambilNama(row),
-                    panitiaName: namaPanitia
-                };
-                savePendingLocks();
-
-                row.Status_WA = "Diproses";
-                row.Lock_By = namaPanitia;
-                row.Lock_Expire_At = hasil.expiresAt;
-
-                hitungDanTampilkanStatistik(databaseAlumni);
-                renderTabel();
-
-                const pesan = encodeURIComponent(buatPesan(row));
-                window.open(`https://wa.me/${hp}?text=${pesan}`, "_blank");
-
-                tampilkanPesan('Lock aktif. Setelah benar-benar kirim WA, klik "Sudah Terkirim".');
-            } catch (err) {
-                console.error(err);
-                tampilkanPesan("Gagal reserve lock: " + err.message);
-            } finally {
-                sedangProses.delete(String(recipientId));
-                renderTabel();
-            }
-        }
-
-        async function konfirmasiKirim(recipientId) {
-            const namaPanitia = pastikanNamaPanitia();
-            if (!namaPanitia) return;
-
-            const pending = getPendingLock(recipientId);
-            if (!pending) {
-                tampilkanPesan("Lock lokal tidak ditemukan atau sudah kadaluarsa.");
-                await muatData();
-                return;
-            }
-
-            sedangProses.add(String(recipientId));
-            renderTabel();
-
-            try {
-                const hasil = await postAction({
-                    action: "confirm",
-                    recipientId: String(recipientId),
-                    token: pending.token,
-                    panitiaName: namaPanitia,
-                    deviceId: deviceId
-                });
-
-                if (!hasil.success) {
-                    tampilkanPesan(hasil.message || hasil.error || "Gagal konfirmasi kirim.");
-                    if (["LOCK_EXPIRED", "TOKEN_INVALID", "NOT_PROCESSING", "ALREADY_SENT"].includes(hasil.code || "")) {
-                        delete pendingLocks[String(recipientId)];
-                        savePendingLocks();
-                    }
-                    await muatData();
-                    return;
-                }
-
-                delete pendingLocks[String(recipientId)];
-                savePendingLocks();
-
-                const row = databaseAlumni.find(r => String(r.Recipient_ID) === String(recipientId));
-                if (row) {
-                    row.Status_WA = "Terkirim";
-                    row.Lock_By = "";
-                    row.Lock_Expire_At = "";
-                    row.Sent_By = hasil.sentBy || namaPanitia;
-                    row.Sent_At = hasil.sentAt || new Date().toISOString();
-                }
-
-                counterSesi = Math.min(counterSesi + 1, LIMIT_SESI);
-                updateProgress();
-                hitungDanTampilkanStatistik(databaseAlumni);
-                renderTabel();
-
-                tampilkanPesan("Status berhasil dikonfirmasi Terkirim.");
-            } catch (err) {
-                console.error(err);
-                tampilkanPesan("Gagal konfirmasi: " + err.message);
-            } finally {
-                sedangProses.delete(String(recipientId));
-                renderTabel();
-            }
-        }
-
-        async function batalkanKirim(recipientId) {
-            const pending = getPendingLock(recipientId);
-            if (!pending) {
-                tampilkanPesan("Lock lokal tidak ditemukan atau sudah kadaluarsa.");
-                await muatData();
-                return;
-            }
-
-            sedangProses.add(String(recipientId));
-            renderTabel();
-
-            try {
-                const hasil = await postAction({
-                    action: "cancel",
-                    recipientId: String(recipientId),
-                    token: pending.token
-                });
-
-                if (!hasil.success) {
-                    tampilkanPesan(hasil.message || hasil.error || "Gagal membatalkan lock.");
-                    if (["LOCK_EXPIRED", "TOKEN_INVALID", "NOT_PROCESSING"].includes(hasil.code || "")) {
-                        delete pendingLocks[String(recipientId)];
-                        savePendingLocks();
-                    }
-                    await muatData();
-                    return;
-                }
-
-                delete pendingLocks[String(recipientId)];
-                savePendingLocks();
-
-                const row = databaseAlumni.find(r => String(r.Recipient_ID) === String(recipientId));
-                if (row) {
-                    row.Status_WA = "Antrean";
-                    row.Lock_By = "";
-                    row.Lock_Expire_At = "";
-                }
-
-                hitungDanTampilkanStatistik(databaseAlumni);
-                renderTabel();
-
-                tampilkanPesan("Lock dibatalkan. Target kembali ke Antrean.");
-            } catch (err) {
-                console.error(err);
-                tampilkanPesan("Gagal cancel: " + err.message);
-            } finally {
-                sedangProses.delete(String(recipientId));
-                renderTabel();
-            }
-        }
-
-        async function perpanjangSemuaLock() {
-            bersihkanPendingKadaluarsa();
-            const ids = Object.keys(pendingLocks);
-            if (ids.length === 0) return;
-
-            for (const recipientId of ids) {
-                const pending = pendingLocks[recipientId];
-                if (!pending?.token) continue;
-
-                try {
-                    const hasil = await postAction({
-                        action: "extend",
-                        recipientId: String(recipientId),
-                        token: pending.token
-                    });
-
-                    if (hasil.success && hasil.expiresAt) {
-                        pendingLocks[recipientId].expiresAt = hasil.expiresAt;
-                        const row = databaseAlumni.find(r => String(r.Recipient_ID) === String(recipientId));
-                        if (row) row.Lock_Expire_At = hasil.expiresAt;
-                    } else if (["LOCK_EXPIRED", "TOKEN_INVALID", "NOT_PROCESSING"].includes(hasil.code || "")) {
-                        delete pendingLocks[recipientId];
-                    }
-                } catch (err) {}
-            }
-
-            savePendingLocks();
-            renderTabel();
-        }
-
-        async function muatDataBackground() {
-            try {
-                bersihkanPendingKadaluarsa();
-                const hasil = await fetchJson(API_URL);
-                if (hasil.error || !Array.isArray(hasil)) return;
-
-                syncPendingDenganServer(hasil);
-                databaseAlumni = urutkanData(hasil);
-                hitungDanTampilkanStatistik(databaseAlumni);
-                renderTabel();
-            } catch (err) {}
-        }
-
-        function tampilkanDaftar(tipe) {
-            const list = document.getElementById("listNama");
-            const judul = document.getElementById("judulModal");
-            list.innerHTML = "";
-
-            const mapJudul = {
-                hadir14: "Daftar Hadir - 14 Maret",
-                tidak14: "Daftar Berhalangan - 14 Maret",
-                hadir15: "Daftar Hadir - 15 Maret",
-                tidak15: "Daftar Berhalangan - 15 Maret"
-            };
-            judul.innerText = mapJudul[tipe] || "Daftar Konfirmasi";
-
-            const filter = databaseAlumni.filter(item => {
-                const r14 = normalisasiRSVP(item.RSVP_14);
-                const r15 = normalisasiRSVP(item.RSVP_15);
-
-                if (tipe === "hadir14") return r14 === "hadir";
-                if (tipe === "tidak14") return r14 === "tidak";
-                if (tipe === "hadir15") return r15 === "hadir";
-                if (tipe === "tidak15") return r15 === "tidak";
-                return false;
-            });
-
-            if (filter.length === 0) {
-                list.innerHTML = `
-                    <li class="p-4 bg-white rounded-2xl text-[11px] font-bold border border-slate-100 shadow-sm">
-                        Tidak ada data.
-                    </li>
-                `;
-            } else {
-                filter.forEach((it, i) => {
-                    const li = document.createElement("li");
-                    li.className = "p-4 bg-white rounded-2xl text-[11px] font-bold border border-slate-100 shadow-sm flex items-center gap-3";
-                    li.innerHTML = `
-                        <span class="bg-slate-100 w-6 h-6 rounded-full flex items-center justify-center text-[9px]">${i + 1}</span>
-                        ${escapeHtml(ambilNama(it))}
-                    `;
-                    list.appendChild(li);
-                });
-            }
-
-            const modal = document.getElementById("modalDaftar");
-            modal.classList.remove("hidden");
-            modal.classList.add("flex");
-        }
-
-        function tutupModal() {
-            const modal = document.getElementById("modalDaftar");
-            modal.classList.add("hidden");
-            modal.classList.remove("flex");
-        }
-
-        function halamanNext() {
-            if (posisiData + perHalaman < databaseAlumni.length) {
-                posisiData += perHalaman;
-                renderTabel();
-                window.scrollTo({ top: 0, behavior: "smooth" });
-            }
-        }
-
-        function halamanPrev() {
-            if (posisiData > 0) {
-                posisiData -= perHalaman;
-                renderTabel();
-                window.scrollTo({ top: 0, behavior: "smooth" });
-            }
-        }
-
-        window.addEventListener("DOMContentLoaded", () => {
-            document.getElementById("deviceInfo").innerText = deviceId;
-            document.getElementById("namaPanitia").value = localStorage.getItem("ikatp_panitia_name") || "";
-            bersihkanPendingKadaluarsa();
-            updateProgress();
-            muatData();
-            setInterval(muatDataBackground, 10000);
-            setInterval(perpanjangSemuaLock, 60000);
+      try {
+        const hasil = await postAction({
+          action: "reserve",
+          recipientId: String(recipientId),
+          panitiaName: namaPanitia,
+          deviceId: deviceId
         });
-    </script>
+
+        if (!hasil.success) {
+          tampilkanPesan(hasil.message || hasil.error || "Gagal mengambil lock.");
+          await muatData();
+          return;
+        }
+
+        pendingLocks[String(recipientId)] = {
+          token: hasil.token,
+          expiresAt: hasil.expiresAt,
+          hp: hp,
+          nama: ambilNama(row),
+          panitiaName: namaPanitia
+        };
+        savePendingLocks();
+
+        row.Status_WA = "Diproses";
+        row.Lock_By = namaPanitia;
+        row.Lock_Expire_At = hasil.expiresAt;
+
+        hitungDanTampilkanStatistik(databaseAlumni);
+        applyFiltersAndRender();
+
+        const pesan = encodeURIComponent(buatPesan(row));
+        window.open(`https://wa.me/${hp}?text=${pesan}`, "_blank");
+
+        tampilkanPesan('Lock aktif. Setelah benar-benar kirim WA, klik "Sudah Terkirim".');
+      } catch (err) {
+        console.error(err);
+        tampilkanPesan("Gagal reserve lock: " + err.message);
+      } finally {
+        sedangProses.delete(String(recipientId));
+        renderTabel();
+      }
+    }
+
+    async function konfirmasiKirim(recipientId) {
+      const namaPanitia = pastikanNamaPanitia();
+      if (!namaPanitia) return;
+
+      const pending = getPendingLock(recipientId);
+      if (!pending) {
+        tampilkanPesan("Lock lokal tidak ditemukan atau sudah kadaluarsa.");
+        await muatData();
+        return;
+      }
+
+      sedangProses.add(String(recipientId));
+      renderTabel();
+
+      try {
+        const hasil = await postAction({
+          action: "confirm",
+          recipientId: String(recipientId),
+          token: pending.token,
+          panitiaName: namaPanitia,
+          deviceId: deviceId
+        });
+
+        if (!hasil.success) {
+          tampilkanPesan(hasil.message || hasil.error || "Gagal konfirmasi kirim.");
+          if (["LOCK_EXPIRED", "TOKEN_INVALID", "NOT_PROCESSING", "ALREADY_SENT"].includes(hasil.code || "")) {
+            delete pendingLocks[String(recipientId)];
+            savePendingLocks();
+          }
+          await muatData();
+          return;
+        }
+
+        delete pendingLocks[String(recipientId)];
+        savePendingLocks();
+
+        const row = databaseAlumni.find(r => String(r.Recipient_ID) === String(recipientId));
+        if (row) {
+          row.Status_WA = "Terkirim";
+          row.Lock_By = "";
+          row.Lock_Expire_At = "";
+          row.Sent_By = hasil.sentBy || namaPanitia;
+          row.Sent_At = hasil.sentAt || new Date().toISOString();
+        }
+
+        counterSesi = Math.min(counterSesi + 1, LIMIT_SESI);
+        updateProgress();
+        hitungDanTampilkanStatistik(databaseAlumni);
+        applyFiltersAndRender();
+
+        tampilkanPesan("Status berhasil dikonfirmasi Terkirim.");
+      } catch (err) {
+        console.error(err);
+        tampilkanPesan("Gagal konfirmasi: " + err.message);
+      } finally {
+        sedangProses.delete(String(recipientId));
+        renderTabel();
+      }
+    }
+
+    async function batalkanKirim(recipientId) {
+      const pending = getPendingLock(recipientId);
+      if (!pending) {
+        tampilkanPesan("Lock lokal tidak ditemukan atau sudah kadaluarsa.");
+        await muatData();
+        return;
+      }
+
+      sedangProses.add(String(recipientId));
+      renderTabel();
+
+      try {
+        const hasil = await postAction({
+          action: "cancel",
+          recipientId: String(recipientId),
+          token: pending.token
+        });
+
+        if (!hasil.success) {
+          tampilkanPesan(hasil.message || hasil.error || "Gagal membatalkan lock.");
+          if (["LOCK_EXPIRED", "TOKEN_INVALID", "NOT_PROCESSING"].includes(hasil.code || "")) {
+            delete pendingLocks[String(recipientId)];
+            savePendingLocks();
+          }
+          await muatData();
+          return;
+        }
+
+        delete pendingLocks[String(recipientId)];
+        savePendingLocks();
+
+        const row = databaseAlumni.find(r => String(r.Recipient_ID) === String(recipientId));
+        if (row) {
+          row.Status_WA = "Antrean";
+          row.Lock_By = "";
+          row.Lock_Expire_At = "";
+        }
+
+        hitungDanTampilkanStatistik(databaseAlumni);
+        applyFiltersAndRender();
+
+        tampilkanPesan("Lock dibatalkan. Target kembali ke Antrean.");
+      } catch (err) {
+        console.error(err);
+        tampilkanPesan("Gagal cancel: " + err.message);
+      } finally {
+        sedangProses.delete(String(recipientId));
+        renderTabel();
+      }
+    }
+
+    async function perpanjangSemuaLock() {
+      bersihkanPendingKadaluarsa();
+      const ids = Object.keys(pendingLocks);
+      if (ids.length === 0) return;
+
+      for (const recipientId of ids) {
+        const pending = pendingLocks[recipientId];
+        if (!pending?.token) continue;
+
+        try {
+          const hasil = await postAction({
+            action: "extend",
+            recipientId: String(recipientId),
+            token: pending.token
+          });
+
+          if (hasil.success && hasil.expiresAt) {
+            pendingLocks[recipientId].expiresAt = hasil.expiresAt;
+            const row = databaseAlumni.find(r => String(r.Recipient_ID) === String(recipientId));
+            if (row) row.Lock_Expire_At = hasil.expiresAt;
+          } else if (["LOCK_EXPIRED", "TOKEN_INVALID", "NOT_PROCESSING"].includes(hasil.code || "")) {
+            delete pendingLocks[recipientId];
+          }
+        } catch (err) {}
+      }
+
+      savePendingLocks();
+      renderTabel();
+    }
+
+    async function muatDataBackground() {
+      try {
+        bersihkanPendingKadaluarsa();
+        const hasil = await fetchJson(API_URL);
+        if (hasil.error || !Array.isArray(hasil)) return;
+
+        syncPendingDenganServer(hasil);
+        databaseAlumni = urutkanDataDefault(hasil);
+        hitungDanTampilkanStatistik(databaseAlumni);
+        applyFiltersAndRender();
+      } catch (err) {}
+    }
+
+    function tampilkanDaftar(tipe) {
+      const list = document.getElementById("listNama");
+      const judul = document.getElementById("judulModal");
+      list.innerHTML = "";
+
+      const mapJudul = {
+        hadir14: "Daftar Hadir - 14 Maret",
+        tidak14: "Daftar Berhalangan - 14 Maret",
+        hadir15: "Daftar Hadir - 15 Maret",
+        tidak15: "Daftar Berhalangan - 15 Maret"
+      };
+      judul.innerText = mapJudul[tipe] || "Daftar Konfirmasi";
+
+      const filter = databaseAlumni.filter(item => {
+        const r14 = normalisasiRSVP(item.RSVP_14);
+        const r15 = normalisasiRSVP(item.RSVP_15);
+
+        if (tipe === "hadir14") return r14 === "hadir";
+        if (tipe === "tidak14") return r14 === "tidak";
+        if (tipe === "hadir15") return r15 === "hadir";
+        if (tipe === "tidak15") return r15 === "tidak";
+        return false;
+      });
+
+      if (filter.length === 0) {
+        list.innerHTML = `
+          <li class="p-4 bg-white rounded-2xl text-[11px] font-bold border border-slate-100 shadow-sm">
+            Tidak ada data.
+          </li>
+        `;
+      } else {
+        filter.forEach((it, i) => {
+          const li = document.createElement("li");
+          li.className = "p-4 bg-white rounded-2xl text-[11px] font-bold border border-slate-100 shadow-sm flex items-center gap-3";
+          li.innerHTML = `
+            <span class="bg-slate-100 w-6 h-6 rounded-full flex items-center justify-center text-[9px]">${i + 1}</span>
+            ${escapeHtml(ambilNama(it))}
+          `;
+          list.appendChild(li);
+        });
+      }
+
+      const modal = document.getElementById("modalDaftar");
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+    }
+
+    function tutupModal() {
+      const modal = document.getElementById("modalDaftar");
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+    }
+
+    function halamanNext() {
+      if (posisiData + perHalaman < filteredAlumni.length) {
+        posisiData += perHalaman;
+        renderTabel();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }
+
+    function halamanPrev() {
+      if (posisiData > 0) {
+        posisiData -= perHalaman;
+        renderTabel();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("deviceInfo").innerText = deviceId;
+      document.getElementById("deviceInfoTop").innerText = deviceId;
+      document.getElementById("namaPanitia").value = localStorage.getItem("ikatp_panitia_name") || "";
+      updatePanitiaBadge();
+      bersihkanPendingKadaluarsa();
+      updateProgress();
+      muatData();
+      setInterval(muatDataBackground, 10000);
+      setInterval(perpanjangSemuaLock, 60000);
+    });
+  </script>
 </body>
 </html>
