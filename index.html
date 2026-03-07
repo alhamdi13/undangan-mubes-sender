@@ -21,9 +21,15 @@
                 <h1 class="text-xl md:text-3xl font-black tracking-tight uppercase italic">
                     Dashboard <span class="md:text-blue-600">IKATP</span>
                 </h1>
-                <p class="text-[10px] md:text-sm font-medium opacity-80 md:text-slate-500 uppercase tracking-widest">
-                    Manajemen Undangan 2026
-                </p>
+                <div class="flex items-center gap-2">
+                    <p class="text-[10px] md:text-sm font-medium opacity-80 md:text-slate-500 uppercase tracking-widest">
+                        Manajemen Undangan 2026
+                    </p>
+                    <span class="flex h-2 w-2 relative" title="Auto-Sync Aktif">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                    </span>
+                </div>
             </div>
             <button onclick="muatData()" class="bg-white text-blue-700 px-5 py-2 rounded-full text-[10px] font-bold shadow-md active-scale transition-all border border-blue-100 md:bg-blue-600 md:text-white whitespace-nowrap">
                 SINKRON DATA
@@ -81,16 +87,15 @@
 Kami mengundang Kamu pada rangkaian acara IKATP:
 
 1. Sabtu, 14 Mar (13.30-20.00): Bukber & Santunan.
-2. Minggu, 15 Mar (13.00-20.00): Musyawarah Besar (Mubes).
+2. Minggu, 15 Mar (08.00-Selesai): Musyawarah Besar (Mubes).
 
 Konfirmasi kehadiran Kamu di:
 https://databasealumniftunp.netlify.app/
-agar kami bisa menyiapkan kebutuhan untuk makanan dll sebagainya
 
-Berikut panduan untuk konfirmasi kehadiran :
-1. Login terlebih dahulu kedalam database (Tutorial Login:
-https://drive.google.com/file/d/12TrXvSG2QKb28vAqzrfAhJNNGPAFMokz/view?usp=sharing)
-2. Tentukan Kehadiran anda di dalam halaman event (Tutorial RSVP:
+Tutorial Login:
+https://drive.google.com/file/d/12TrXvSG2QKb28vAqzrfAhJNNGPAFMokz/view?usp=sharing
+
+Tutorial RSVP:
 https://i.ibb.co.com/HLh8wkdg/undangan-sender.png</textarea>
 
                 <button onclick="muatData()" id="btnMuat" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-black active-scale transition shadow-xl uppercase text-xs tracking-widest">
@@ -377,6 +382,12 @@ https://i.ibb.co.com/HLh8wkdg/undangan-sender.png</textarea>
         function konfirmasiKirim(el, hp) {
             if (kunciKeamanan || counterSesi >= LIMIT_SESI) return;
 
+            // Pembaruan UI langsung untuk mencegah pengiriman ganda dari perangkat yang sama
+            const rowData = databaseAlumni.find(r => ambilHP(r) === hp);
+            if (rowData) rowData.Status_WA = "Terkirim";
+            renderTabel();
+
+            // Mengirim request ke backend
             fetch(`${API_URL}?action=update&hp=${encodeURIComponent(hp)}`).catch(() => {});
 
             counterSesi++;
@@ -461,6 +472,50 @@ https://i.ibb.co.com/HLh8wkdg/undangan-sender.png</textarea>
             modal.classList.add("hidden");
             modal.classList.remove("flex");
         }
+
+        async function muatDataBackground() {
+            if (kunciKeamanan) return;
+            try {
+                const respon = await fetch(API_URL);
+                const hasil = await respon.json();
+                if (hasil.error || !Array.isArray(hasil)) return;
+
+                let h14 = 0, t14 = 0, h15 = 0, t15 = 0, belum = 0;
+                let adaPerubahan = false;
+
+                hasil.forEach(itemBaru => {
+                    const r14 = normalisasiRSVP(itemBaru.RSVP_14);
+                    const r15 = normalisasiRSVP(itemBaru.RSVP_15);
+
+                    if (r14 === "hadir") h14++; else if (r14 === "tidak") t14++;
+                    if (r15 === "hadir") h15++; else if (r15 === "tidak") t15++;
+                    if (r14 === "belum" && r15 === "belum") belum++;
+
+                    const hpBaru = ambilHP(itemBaru);
+                    const rowLama = databaseAlumni.find(r => ambilHP(r) === hpBaru);
+                    
+                    if (rowLama) {
+                        const statusLama = ambilStatusWA(rowLama).toLowerCase();
+                        const statusBaru = ambilStatusWA(itemBaru).toLowerCase();
+                        if (statusLama !== statusBaru) {
+                            rowLama.Status_WA = statusBaru; 
+                            adaPerubahan = true;
+                        }
+                    }
+                });
+
+                if (adaPerubahan) {
+                    document.getElementById("statHadir14").innerText = h14;
+                    document.getElementById("statTidak14").innerText = t14;
+                    document.getElementById("statHadir15").innerText = h15;
+                    document.getElementById("statTidak15").innerText = t15;
+                    document.getElementById("statBelum").innerText = belum;
+                    renderTabel();
+                }
+            } catch (err) {}
+        }
+
+        setInterval(muatDataBackground, 10000);
 
         function halamanNext() {
             if (posisiData + perHalaman < databaseAlumni.length) {
