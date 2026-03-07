@@ -91,12 +91,15 @@ Kami mengundang Kamu pada rangkaian acara IKATP:
 
 Konfirmasi kehadiran Kamu di:
 https://databasealumniftunp.netlify.app/
-Agar panitia bisa menyiapkan makanan berbukabersama serta berbagai hal lainnya
+agar panitia bisa menyiapkan makanan bukabersama serta hal lainnya
 
-Berikut panduan untuk konfirmasi kehadiran :
-1. Login terlebih dahulu ke web database = Tutorial Login:
+Berikut adalah panduan untuk konfirmasi kehadiran:
+1. Login terlebih dahulu ke web database di atas 
+Tutorial Login:
 https://drive.google.com/file/d/12TrXvSG2QKb28vAqzrfAhJNNGPAFMokz/view?usp=sharing
-2. Tentukan kehadiran anda di dalam halaman event= Tutorial RSVP:
+
+2. Tentukan kehadiran anda di dalam halaman event
+Tutorial RSVP:
 https://i.ibb.co.com/HLh8wkdg/undangan-sender.png</textarea>
 
                 <button onclick="muatData()" id="btnMuat" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-black active-scale transition shadow-xl uppercase text-xs tracking-widest">
@@ -137,6 +140,11 @@ https://i.ibb.co.com/HLh8wkdg/undangan-sender.png</textarea>
             <div id="isiTabelMobile" class="space-y-3"></div>
         </div>
     </main>
+
+    <!-- Toast Notifikasi -->
+    <div id="toastPesan" class="fixed top-4 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-6 py-3 rounded-full text-xs font-bold shadow-2xl z-[150] transition-all duration-300 opacity-0 pointer-events-none translate-y-[-20px]">
+        Pesan Notifikasi
+    </div>
 
     <!-- Modal Daftar RSVP -->
     <div id="modalDaftar" class="fixed inset-0 bg-slate-900/80 hidden items-center justify-center z-[100] p-4 backdrop-blur-sm">
@@ -297,7 +305,7 @@ https://i.ibb.co.com/HLh8wkdg/undangan-sender.png</textarea>
                 document.getElementById("areaTabel").classList.remove("hidden");
             } catch (err) {
                 console.error(err);
-                alert("Gagal memuat data: " + err.message);
+                tampilkanPesan("Gagal memuat data: " + err.message);
             } finally {
                 btn.innerText = "Refresh Antrean Pengiriman";
                 btn.disabled = false;
@@ -363,16 +371,15 @@ https://i.ibb.co.com/HLh8wkdg/undangan-sender.png</textarea>
                             ${escapeHtml(statusWA)}
                         </span>
 
-                        <a href="${disabledSend ? "#" : `https://wa.me/${hp}?text=${pesan}`}"
-                           target="_blank"
-                           ${disabledSend ? "" : `onclick="konfirmasiKirim(this, '${hp}')"` }
+                        <button onclick="prosesKirim(this, '${hp}', '${pesan}')"
+                           ${disabledSend ? "disabled" : ""}
                            class="flex-1 text-center py-3 rounded-2xl text-[10px] font-black shadow-md active-scale transition-all ${
                                disabledSend
                                    ? "bg-slate-100 text-slate-300 pointer-events-none"
                                    : "bg-blue-600 text-white"
                            }">
                            KIRIM WA
-                        </a>
+                        </button>
                     </div>
                 `;
 
@@ -380,22 +387,58 @@ https://i.ibb.co.com/HLh8wkdg/undangan-sender.png</textarea>
             });
         }
 
-        function konfirmasiKirim(el, hp) {
+        function tampilkanPesan(teks) {
+            const toast = document.getElementById("toastPesan");
+            toast.innerText = teks;
+            toast.classList.remove("opacity-0", "translate-y-[-20px]");
+            toast.classList.add("opacity-100", "translate-y-0");
+            setTimeout(() => {
+                toast.classList.add("opacity-0", "translate-y-[-20px]");
+                toast.classList.remove("opacity-100", "translate-y-0");
+            }, 3000);
+        }
+
+        function prosesKirim(btn, hp, pesanUrlEncoded) {
             if (kunciKeamanan || counterSesi >= LIMIT_SESI) return;
 
-            // Pembaruan UI langsung untuk mencegah pengiriman ganda dari perangkat yang sama
-            const rowData = databaseAlumni.find(r => ambilHP(r) === hp);
-            if (rowData) rowData.Status_WA = "Terkirim";
-            renderTabel();
+            const waWindow = window.open('about:blank', '_blank');
 
-            // Mengirim request ke backend
-            fetch(`${API_URL}?action=update&hp=${encodeURIComponent(hp)}`).catch(() => {});
+            const teksAsli = btn.innerText;
+            btn.innerText = "MENGECEK...";
+            btn.classList.add("pointer-events-none", "opacity-50");
 
-            counterSesi++;
-            document.getElementById("labelStatistik").innerText = `Sesi: ${counterSesi} / ${LIMIT_SESI}`;
-            document.getElementById("barProgres").style.width = `${(counterSesi / LIMIT_SESI) * 100}%`;
+            fetch(API_URL)
+                .then(respon => respon.json())
+                .then(hasil => {
+                    const targetServer = hasil.find(item => ambilHP(item) === hp);
+                    
+                    if (targetServer && ambilStatusWA(targetServer).toLowerCase() === "terkirim") {
+                        waWindow.close();
+                        tampilkanPesan("Gagal. Target sudah dieksekusi panitia lain.");
+                        muatDataBackground();
+                        return;
+                    }
 
-            aktifkanJeda();
+                    waWindow.location.href = `https://wa.me/${hp}?text=${pesanUrlEncoded}`;
+
+                    const rowData = databaseAlumni.find(r => ambilHP(r) === hp);
+                    if (rowData) rowData.Status_WA = "Terkirim";
+                    renderTabel();
+
+                    fetch(`${API_URL}?action=update&hp=${encodeURIComponent(hp)}`).catch(() => {});
+
+                    counterSesi++;
+                    document.getElementById("labelStatistik").innerText = `Sesi: ${counterSesi} / ${LIMIT_SESI}`;
+                    document.getElementById("barProgres").style.width = `${(counterSesi / LIMIT_SESI) * 100}%`;
+
+                    aktifkanJeda();
+                })
+                .catch(err => {
+                    waWindow.close();
+                    tampilkanPesan("Koneksi gagal saat memvalidasi data server.");
+                    btn.innerText = teksAsli;
+                    btn.classList.remove("pointer-events-none", "opacity-50");
+                });
         }
 
         function aktifkanJeda() {
