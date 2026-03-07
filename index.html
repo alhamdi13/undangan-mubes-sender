@@ -7,14 +7,13 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .smooth-scroll { -webkit-overflow-scrolling: touch; }
-        .active-scale:active { transform: scale(0.95); }
+        .active-scale:active { transform: scale(0.97); }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .animate-fade { animation: fadeIn 0.4s ease-out; }
     </style>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans min-h-screen">
 
-    <!-- Navigasi Atas -->
     <header class="bg-blue-700 text-white p-4 sticky top-0 z-50 shadow-lg md:bg-white md:text-slate-900 md:shadow-none md:p-8">
         <div class="max-w-6xl mx-auto flex justify-between items-center gap-4">
             <div>
@@ -25,7 +24,7 @@
                     <p class="text-[10px] md:text-sm font-medium opacity-80 md:text-slate-500 uppercase tracking-widest">
                         Manajemen Undangan 2026
                     </p>
-                    <span class="flex h-2 w-2 relative" title="Auto-Sync Aktif">
+                    <span class="flex h-2 w-2 relative" title="Auto-Lock Aktif">
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                     </span>
@@ -39,9 +38,8 @@
 
     <main class="max-w-6xl mx-auto p-4 md:p-8 space-y-6 pb-32">
 
-        <!-- Dashboard Statistik Dua Hari -->
+        <!-- Dashboard Statistik RSVP -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Sabtu 14 Mar -->
             <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
                 <div class="flex justify-between items-center mb-4 text-green-600">
                     <h3 class="text-[10px] font-black uppercase tracking-widest italic">Sabtu, 14 Mar (Bukber)</h3>
@@ -59,7 +57,6 @@
                 </div>
             </div>
 
-            <!-- Minggu 15 Mar -->
             <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
                 <div class="flex justify-between items-center mb-4 text-blue-600">
                     <h3 class="text-[10px] font-black uppercase tracking-widest italic">Minggu, 15 Mar (Mubes)</h3>
@@ -78,27 +75,34 @@
             </div>
         </div>
 
-        <!-- Section Pengiriman -->
+        <!-- Panel Pengiriman -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div class="lg:col-span-2 bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Nama Panitia</label>
+                        <input id="namaPanitia" type="text" placeholder="Isi nama panitia..." class="w-full bg-slate-50 border-none rounded-2xl p-4 text-sm focus:ring-2 focus:ring-blue-500 outline-none" oninput="simpanNamaPanitia(true)" />
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Device ID</label>
+                        <div id="deviceInfo" class="w-full bg-slate-50 rounded-2xl p-4 text-xs font-mono text-slate-500 break-all">-</div>
+                    </div>
+                </div>
+
                 <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Draf Pesan</label>
                 <textarea id="teksPesan" rows="8" class="w-full bg-slate-50 border-none rounded-2xl p-4 text-sm leading-relaxed mb-4 focus:ring-2 focus:ring-blue-500 outline-none">Salam Alumni FT UNP. Halo {{nama}}.
 
 Kami mengundang Kamu pada rangkaian acara IKATP:
 
 1. Sabtu, 14 Mar (13.30-20.00): Bukber & Santunan.
-2. Minggu, 15 Mar (13.30-20.00): Musyawarah Besar (Mubes).
+2. Minggu, 15 Mar (08.00-Selesai): Musyawarah Besar (Mubes).
 
 Konfirmasi kehadiran Kamu di:
 https://databasealumniftunp.netlify.app/
-Agar panitia bisa menyiapkan menu berbukabersama serta hal hal lainnya
 
-Berikut adalah panduan untuk konfirmasi kehadiran :
-1. Login terlebih dahulu ke web database di atas
 Tutorial Login:
 https://drive.google.com/file/d/12TrXvSG2QKb28vAqzrfAhJNNGPAFMokz/view?usp=sharing
 
-2. Setelah login tentukan kehadiran anda dengan mengisi pilihan di halaman event
 Tutorial RSVP:
 https://i.ibb.co.com/HLh8wkdg/undangan-sender.png</textarea>
 
@@ -107,10 +111,23 @@ https://i.ibb.co.com/HLh8wkdg/undangan-sender.png</textarea>
                 </button>
             </div>
 
-            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 flex flex-col justify-center text-center">
-                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Belum Ada Respon</span>
-                <span id="statBelum" class="text-5xl font-black text-blue-600">0</span>
-                <p class="text-[9px] font-bold text-slate-400 mt-2 uppercase tracking-tighter italic">Fokus pengiriman pada target ini</p>
+            <div class="space-y-4">
+                <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 text-center">
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 block">Belum Ada Respon</span>
+                    <span id="statBelum" class="text-5xl font-black text-blue-600">0</span>
+                    <p class="text-[9px] font-bold text-slate-400 mt-2 uppercase tracking-tighter italic">Belum RSVP dua agenda</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 text-center">
+                        <span class="text-[9px] font-black text-amber-500 uppercase tracking-widest block">Diproses</span>
+                        <span id="statDiprosesWa" class="text-3xl font-black text-amber-500">0</span>
+                    </div>
+                    <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 text-center">
+                        <span class="text-[9px] font-black text-green-600 uppercase tracking-widest block">Terkirim</span>
+                        <span id="statTerkirimWa" class="text-3xl font-black text-green-600">0</span>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -131,22 +148,16 @@ https://i.ibb.co.com/HLh8wkdg/undangan-sender.png</textarea>
                 </div>
             </div>
 
-            <!-- Jeda Keamanan -->
-            <div id="barJeda" class="hidden p-4 bg-red-600 text-white rounded-2xl shadow-lg text-center font-black text-[10px] uppercase tracking-widest sticky top-[130px] md:relative md:top-0 z-30 animate-pulse">
-                Keamanan Akun: Tunggu <span id="detikJeda">30</span> Detik...
-            </div>
-
-            <!-- List Card Mobile -->
             <div id="isiTabelMobile" class="space-y-3"></div>
         </div>
     </main>
 
-    <!-- Toast Notifikasi -->
+    <!-- Toast -->
     <div id="toastPesan" class="fixed top-4 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-6 py-3 rounded-full text-xs font-bold shadow-2xl z-[150] transition-all duration-300 opacity-0 pointer-events-none translate-y-[-20px]">
         Pesan Notifikasi
     </div>
 
-    <!-- Modal Daftar RSVP -->
+    <!-- Modal RSVP -->
     <div id="modalDaftar" class="fixed inset-0 bg-slate-900/80 hidden items-center justify-center z-[100] p-4 backdrop-blur-sm">
         <div class="bg-white rounded-[40px] w-full max-w-lg max-h-[80vh] flex flex-col shadow-2xl overflow-hidden">
             <div class="p-8 border-b flex justify-between items-center">
@@ -169,16 +180,72 @@ https://i.ibb.co.com/HLh8wkdg/undangan-sender.png</textarea>
     </div>
 
     <script>
-        // Backend URL baru
-        const API_URL = "https://script.google.com/macros/s/AKfycbzyyqR0-U1MiPua7nM1pNCYJExCkkziKDcioEFYVH5OVKc-f_pjiVfbVBtY6grMn70o/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbwc2Y66TdJjM2Mub6O3Qus_G7Raj4ul4mVRoSXjUKHoX-7jo8IfYu_qESoq6rXKk1k/exec";
 
         let databaseAlumni = [];
         let posisiData = 0;
         const perHalaman = 20;
         let counterSesi = 0;
         const LIMIT_SESI = 50;
-        const WAKTU_TUNGGU = 30;
-        let kunciKeamanan = false;
+
+        let sedangProses = new Set();
+        let pendingLocks = loadPendingLocks();
+        const deviceId = getOrCreateDeviceId();
+
+        function getOrCreateDeviceId() {
+            let id = localStorage.getItem("ikatp_device_id");
+            if (!id) {
+                id = "DEV-" + Math.random().toString(36).slice(2, 10).toUpperCase();
+                localStorage.setItem("ikatp_device_id", id);
+            }
+            return id;
+        }
+
+        function loadPendingLocks() {
+            try {
+                return JSON.parse(localStorage.getItem("ikatp_pending_locks") || "{}");
+            } catch (err) {
+                return {};
+            }
+        }
+
+        function savePendingLocks() {
+            localStorage.setItem("ikatp_pending_locks", JSON.stringify(pendingLocks));
+        }
+
+        function bersihkanPendingKadaluarsa() {
+            const now = Date.now();
+            Object.keys(pendingLocks).forEach(id => {
+                const item = pendingLocks[id];
+                const exp = Date.parse(item?.expiresAt || "");
+                if (!item || !item.token || isNaN(exp) || exp <= now) {
+                    delete pendingLocks[id];
+                }
+            });
+            savePendingLocks();
+        }
+
+        function getPendingLock(recipientId) {
+            bersihkanPendingKadaluarsa();
+            return pendingLocks[String(recipientId)] || null;
+        }
+
+        function simpanNamaPanitia(silent = false) {
+            const nama = document.getElementById("namaPanitia").value.trim();
+            localStorage.setItem("ikatp_panitia_name", nama);
+            if (!silent && nama) tampilkanPesan("Nama panitia disimpan.");
+            return nama;
+        }
+
+        function pastikanNamaPanitia() {
+            const nama = simpanNamaPanitia(true);
+            if (!nama) {
+                tampilkanPesan("Isi nama panitia terlebih dahulu.");
+                document.getElementById("namaPanitia").focus();
+                return "";
+            }
+            return nama;
+        }
 
         function formatNomor(input) {
             let bersih = String(input || "").replace(/\D/g, "");
@@ -228,6 +295,14 @@ https://i.ibb.co.com/HLh8wkdg/undangan-sender.png</textarea>
             return String(item.Status_WA || item.status_wa || item["Status WA"] || item["status wa"] || "Antrean").trim();
         }
 
+        function labelStatus(statusAsli) {
+            const s = normalisasiRSVP(statusAsli);
+            if (s === "hadir") return "Hadir";
+            if (s === "tidak") return "Berhalangan";
+            if (s === "belum") return "-";
+            return String(statusAsli || "-");
+        }
+
         function getBadgeClass(statusNormal, tipeHari) {
             if (statusNormal === "hadir") {
                 return tipeHari === "14"
@@ -243,21 +318,27 @@ https://i.ibb.co.com/HLh8wkdg/undangan-sender.png</textarea>
             return "bg-amber-100 text-amber-700";
         }
 
-        function labelStatus(statusAsli) {
-            const s = normalisasiRSVP(statusAsli);
-            if (s === "hadir") return "Hadir";
-            if (s === "tidak") return "Berhalangan";
-            if (s === "belum") return "-";
-            return String(statusAsli || "-");
+        function getStatusWaClass(status) {
+            const s = String(status || "").toLowerCase();
+            if (s === "terkirim") return "bg-green-100 text-green-700";
+            if (s === "diproses") return "bg-amber-100 text-amber-700";
+            return "bg-slate-100 text-slate-500";
         }
 
         function urutkanData(data) {
             return data.sort((a, b) => {
-                const aSent = ambilStatusWA(a).toLowerCase() === "terkirim";
-                const bSent = ambilStatusWA(b).toLowerCase() === "terkirim";
+                const rank = val => {
+                    const s = ambilStatusWA(val).toLowerCase();
+                    if (s === "antrean") return 0;
+                    if (s === "diproses") return 1;
+                    if (s === "terkirim") return 2;
+                    return 3;
+                };
 
-                if (aSent && !bSent) return 1;
-                if (!aSent && bSent) return -1;
+                const aRank = rank(a);
+                const bRank = rank(b);
+
+                if (aRank !== bRank) return aRank - bRank;
 
                 const aBelum = normalisasiRSVP(a.RSVP_14) === "belum" && normalisasiRSVP(a.RSVP_15) === "belum";
                 const bBelum = normalisasiRSVP(b.RSVP_14) === "belum" && normalisasiRSVP(b.RSVP_15) === "belum";
@@ -269,6 +350,78 @@ https://i.ibb.co.com/HLh8wkdg/undangan-sender.png</textarea>
             });
         }
 
+        async function fetchJson(url, options = {}) {
+            const response = await fetch(url, options);
+            const text = await response.text();
+            try {
+                return JSON.parse(text);
+            } catch (err) {
+                throw new Error("Response backend tidak valid.");
+            }
+        }
+
+        async function postAction(payload) {
+            return fetchJson(API_URL, {
+                method: "POST",
+                body: JSON.stringify(payload)
+            });
+        }
+
+        function syncPendingDenganServer(dataServer) {
+            const map = new Map(dataServer.map(item => [String(item.Recipient_ID), item]));
+            Object.keys(pendingLocks).forEach(id => {
+                const server = map.get(String(id));
+                const pending = pendingLocks[id];
+                const exp = Date.parse(pending?.expiresAt || "");
+
+                if (!server) {
+                    delete pendingLocks[id];
+                    return;
+                }
+
+                const serverStatus = ambilStatusWA(server).toLowerCase();
+                if (serverStatus !== "diproses") {
+                    delete pendingLocks[id];
+                    return;
+                }
+
+                if (isNaN(exp) || exp <= Date.now()) {
+                    delete pendingLocks[id];
+                }
+            });
+            savePendingLocks();
+        }
+
+        function hitungDanTampilkanStatistik(data) {
+            let h14 = 0, t14 = 0, h15 = 0, t15 = 0, belum = 0;
+            let diprosesWa = 0, terkirimWa = 0;
+
+            data.forEach(item => {
+                const r14 = normalisasiRSVP(item.RSVP_14);
+                const r15 = normalisasiRSVP(item.RSVP_15);
+
+                if (r14 === "hadir") h14++;
+                else if (r14 === "tidak") t14++;
+
+                if (r15 === "hadir") h15++;
+                else if (r15 === "tidak") t15++;
+
+                if (r14 === "belum" && r15 === "belum") belum++;
+
+                const statusWa = ambilStatusWA(item).toLowerCase();
+                if (statusWa === "diproses") diprosesWa++;
+                if (statusWa === "terkirim") terkirimWa++;
+            });
+
+            document.getElementById("statHadir14").innerText = h14;
+            document.getElementById("statTidak14").innerText = t14;
+            document.getElementById("statHadir15").innerText = h15;
+            document.getElementById("statTidak15").innerText = t15;
+            document.getElementById("statBelum").innerText = belum;
+            document.getElementById("statDiprosesWa").innerText = diprosesWa;
+            document.getElementById("statTerkirimWa").innerText = terkirimWa;
+        }
+
         async function muatData() {
             const btn = document.getElementById("btnMuat");
             btn.innerText = "SINKRONISASI...";
@@ -276,34 +429,15 @@ https://i.ibb.co.com/HLh8wkdg/undangan-sender.png</textarea>
             document.body.style.opacity = "0.7";
 
             try {
-                const respon = await fetch(API_URL);
-                const hasil = await respon.json();
+                bersihkanPendingKadaluarsa();
+                const hasil = await fetchJson(API_URL);
 
                 if (hasil.error) throw new Error(hasil.error);
                 if (!Array.isArray(hasil)) throw new Error("Format data backend tidak valid.");
 
-                let h14 = 0, t14 = 0, h15 = 0, t15 = 0, belum = 0;
-
-                hasil.forEach(item => {
-                    const r14 = normalisasiRSVP(item.RSVP_14);
-                    const r15 = normalisasiRSVP(item.RSVP_15);
-
-                    if (r14 === "hadir") h14++;
-                    else if (r14 === "tidak") t14++;
-
-                    if (r15 === "hadir") h15++;
-                    else if (r15 === "tidak") t15++;
-
-                    if (r14 === "belum" && r15 === "belum") belum++;
-                });
-
-                document.getElementById("statHadir14").innerText = h14;
-                document.getElementById("statTidak14").innerText = t14;
-                document.getElementById("statHadir15").innerText = h15;
-                document.getElementById("statTidak15").innerText = t15;
-                document.getElementById("statBelum").innerText = belum;
-
+                syncPendingDenganServer(hasil);
                 databaseAlumni = urutkanData(hasil);
+                hitungDanTampilkanStatistik(databaseAlumni);
 
                 posisiData = 0;
                 renderTabel();
@@ -318,9 +452,25 @@ https://i.ibb.co.com/HLh8wkdg/undangan-sender.png</textarea>
             }
         }
 
+        function updateProgress() {
+            document.getElementById("labelStatistik").innerText = `Sesi: ${counterSesi} / ${LIMIT_SESI}`;
+            document.getElementById("barProgres").style.width = `${(counterSesi / LIMIT_SESI) * 100}%`;
+        }
+
+        function formatWaktuSingkat(iso) {
+            if (!iso) return "-";
+            const d = new Date(iso);
+            if (isNaN(d)) return "-";
+            return d.toLocaleString("id-ID", {
+                day: "2-digit",
+                month: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit"
+            });
+        }
+
         function renderTabel() {
             const wadah = document.getElementById("isiTabelMobile");
-            const draf = document.getElementById("teksPesan").value;
             wadah.innerHTML = "";
 
             const dataHalaman = databaseAlumni.slice(posisiData, posisiData + perHalaman);
@@ -335,23 +485,39 @@ https://i.ibb.co.com/HLh8wkdg/undangan-sender.png</textarea>
             }
 
             dataHalaman.forEach(row => {
+                const recipientId = String(row.Recipient_ID || "");
                 const nama = ambilNama(row);
                 const hp = ambilHP(row);
+
                 const r14Asli = row.RSVP_14 || "-";
                 const r15Asli = row.RSVP_15 || "-";
                 const r14 = normalisasiRSVP(r14Asli);
                 const r15 = normalisasiRSVP(r15Asli);
 
                 const statusWA = ambilStatusWA(row);
-                const isSent = statusWA.toLowerCase() === "terkirim";
+                const statusLower = statusWA.toLowerCase();
+                const pending = getPendingLock(recipientId);
+                const isOwnPending = !!pending && statusLower === "diproses";
+                const isBusy = sedangProses.has(recipientId);
 
-                const disabledSend = isSent || kunciKeamanan || counterSesi >= LIMIT_SESI || !hp;
-                const pesan = encodeURIComponent(draf.replace(/{{nama}}/g, nama));
+                let infoStatus = statusWA;
+                if (statusLower === "diproses") {
+                    infoStatus = `Diproses${row.Lock_By ? " oleh " + row.Lock_By : ""}${row.Lock_Expire_At ? " • s.d. " + formatWaktuSingkat(row.Lock_Expire_At) : ""}`;
+                }
+                if (statusLower === "terkirim") {
+                    infoStatus = `Terkirim${row.Sent_By ? " oleh " + row.Sent_By : ""}${row.Sent_At ? " • " + formatWaktuSingkat(row.Sent_At) : ""}`;
+                }
+
+                const disabledSend = !hp || isBusy || statusLower === "terkirim" || (statusLower === "diproses" && !isOwnPending);
+
+                const warningDup = Number(row.Duplicate_HP_Count || 0) > 1
+                    ? `<span class="text-[8px] font-black px-2 py-1 rounded bg-rose-50 text-rose-600 uppercase">HP Ganda x${escapeHtml(row.Duplicate_HP_Count)}</span>`
+                    : "";
 
                 const card = document.createElement("div");
                 card.className = `p-5 rounded-[32px] border transition-all ${
-                    isSent
-                        ? "bg-slate-50 opacity-60 grayscale"
+                    statusLower === "terkirim"
+                        ? "bg-slate-50 opacity-75"
                         : "bg-white shadow-sm border-slate-200"
                 }`;
 
@@ -371,21 +537,40 @@ https://i.ibb.co.com/HLh8wkdg/undangan-sender.png</textarea>
                         </div>
                     </div>
 
-                    <div class="flex justify-between items-center gap-4">
-                        <span class="text-[8px] font-black tracking-widest ${isSent ? "text-green-600" : "text-slate-300"} uppercase">
-                            ${escapeHtml(statusWA)}
+                    <div class="flex flex-wrap items-center gap-2 mb-4">
+                        <span class="text-[8px] font-black px-2 py-1 rounded uppercase ${getStatusWaClass(statusWA)}">
+                            ${escapeHtml(infoStatus)}
                         </span>
-
-                        <button onclick="prosesKirim(this, '${hp}', '${pesan}')"
-                           ${disabledSend ? "disabled" : ""}
-                           class="flex-1 text-center py-3 rounded-2xl text-[10px] font-black shadow-md active-scale transition-all ${
-                               disabledSend
-                                   ? "bg-slate-100 text-slate-300 pointer-events-none"
-                                   : "bg-blue-600 text-white"
-                           }">
-                           KIRIM WA
-                        </button>
+                        ${warningDup}
                     </div>
+
+                    ${
+                        isOwnPending
+                        ? `
+                        <div class="space-y-2">
+                            <button onclick="bukaWhatsappUlang('${recipientId}')" class="w-full text-center py-3 rounded-2xl text-[10px] font-black shadow-md active-scale transition-all bg-blue-600 text-white">
+                                BUKA WA LAGI
+                            </button>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button onclick="konfirmasiKirim('${recipientId}')" ${isBusy ? "disabled" : ""} class="text-center py-3 rounded-2xl text-[10px] font-black shadow-md active-scale transition-all ${isBusy ? "bg-slate-100 text-slate-300" : "bg-green-600 text-white"}">
+                                    SUDAH TERKIRIM
+                                </button>
+                                <button onclick="batalkanKirim('${recipientId}')" ${isBusy ? "disabled" : ""} class="text-center py-3 rounded-2xl text-[10px] font-black shadow-md active-scale transition-all ${isBusy ? "bg-slate-100 text-slate-300" : "bg-red-600 text-white"}">
+                                    BATALKAN
+                                </button>
+                            </div>
+                        </div>
+                        `
+                        : `
+                        <button onclick="reserveKirim('${recipientId}')" ${disabledSend ? "disabled" : ""} class="w-full text-center py-3 rounded-2xl text-[10px] font-black shadow-md active-scale transition-all ${
+                            disabledSend
+                                ? "bg-slate-100 text-slate-300 pointer-events-none"
+                                : "bg-blue-600 text-white"
+                        }">
+                            ${isBusy ? "MEMPROSES..." : "AMBIL & KIRIM WA"}
+                        </button>
+                        `
+                    }
                 `;
 
                 wadah.appendChild(card);
@@ -400,73 +585,244 @@ https://i.ibb.co.com/HLh8wkdg/undangan-sender.png</textarea>
             setTimeout(() => {
                 toast.classList.add("opacity-0", "translate-y-[-20px]");
                 toast.classList.remove("opacity-100", "translate-y-0");
-            }, 3000);
+            }, 3200);
         }
 
-        function prosesKirim(btn, hp, pesanUrlEncoded) {
-            if (kunciKeamanan || counterSesi >= LIMIT_SESI) return;
-
-            const waWindow = window.open('about:blank', '_blank');
-
-            const teksAsli = btn.innerText;
-            btn.innerText = "MENGECEK...";
-            btn.classList.add("pointer-events-none", "opacity-50");
-
-            fetch(API_URL)
-                .then(respon => respon.json())
-                .then(hasil => {
-                    const targetServer = hasil.find(item => ambilHP(item) === hp);
-                    
-                    if (targetServer && ambilStatusWA(targetServer).toLowerCase() === "terkirim") {
-                        waWindow.close();
-                        tampilkanPesan("Gagal. Target sudah dieksekusi panitia lain.");
-                        muatDataBackground();
-                        return;
-                    }
-
-                    waWindow.location.href = `https://wa.me/${hp}?text=${pesanUrlEncoded}`;
-
-                    const rowData = databaseAlumni.find(r => ambilHP(r) === hp);
-                    if (rowData) rowData.Status_WA = "Terkirim";
-                    renderTabel();
-
-                    fetch(`${API_URL}?action=update&hp=${encodeURIComponent(hp)}`).catch(() => {});
-
-                    counterSesi++;
-                    document.getElementById("labelStatistik").innerText = `Sesi: ${counterSesi} / ${LIMIT_SESI}`;
-                    document.getElementById("barProgres").style.width = `${(counterSesi / LIMIT_SESI) * 100}%`;
-
-                    aktifkanJeda();
-                })
-                .catch(err => {
-                    waWindow.close();
-                    tampilkanPesan("Koneksi gagal saat memvalidasi data server.");
-                    btn.innerText = teksAsli;
-                    btn.classList.remove("pointer-events-none", "opacity-50");
-                });
+        function buatPesan(row) {
+            const draf = document.getElementById("teksPesan").value || "";
+            return draf.replace(/{{nama}}/g, ambilNama(row));
         }
 
-        function aktifkanJeda() {
-            kunciKeamanan = true;
+        function bukaWhatsappUlang(recipientId) {
+            const row = databaseAlumni.find(r => String(r.Recipient_ID) === String(recipientId));
+            if (!row) return;
+            const hp = ambilHP(row);
+            if (!hp) {
+                tampilkanPesan("Nomor HP kosong.");
+                return;
+            }
+            const pesan = encodeURIComponent(buatPesan(row));
+            window.open(`https://wa.me/${hp}?text=${pesan}`, "_blank");
+        }
+
+        async function reserveKirim(recipientId) {
+            const namaPanitia = pastikanNamaPanitia();
+            if (!namaPanitia) return;
+            if (counterSesi >= LIMIT_SESI) {
+                tampilkanPesan("Batas sesi perangkat ini sudah tercapai.");
+                return;
+            }
+
+            const row = databaseAlumni.find(r => String(r.Recipient_ID) === String(recipientId));
+            if (!row) {
+                tampilkanPesan("Data target tidak ditemukan.");
+                return;
+            }
+
+            const hp = ambilHP(row);
+            if (!hp) {
+                tampilkanPesan("Nomor HP kosong atau tidak valid.");
+                return;
+            }
+
+            sedangProses.add(String(recipientId));
             renderTabel();
 
-            let sisa = WAKTU_TUNGGU;
-            const bar = document.getElementById("barJeda");
-            const teks = document.getElementById("detikJeda");
-            teks.innerText = sisa;
-            bar.classList.remove("hidden");
+            try {
+                const hasil = await postAction({
+                    action: "reserve",
+                    recipientId: String(recipientId),
+                    panitiaName: namaPanitia,
+                    deviceId: deviceId
+                });
 
-            const timer = setInterval(() => {
-                sisa--;
-                teks.innerText = sisa;
-
-                if (sisa <= 0) {
-                    clearInterval(timer);
-                    kunciKeamanan = false;
-                    bar.classList.add("hidden");
-                    muatData();
+                if (!hasil.success) {
+                    tampilkanPesan(hasil.message || hasil.error || "Gagal mengambil lock.");
+                    await muatData();
+                    return;
                 }
-            }, 1000);
+
+                pendingLocks[String(recipientId)] = {
+                    token: hasil.token,
+                    expiresAt: hasil.expiresAt,
+                    hp: hp,
+                    nama: ambilNama(row),
+                    panitiaName: namaPanitia
+                };
+                savePendingLocks();
+
+                row.Status_WA = "Diproses";
+                row.Lock_By = namaPanitia;
+                row.Lock_Expire_At = hasil.expiresAt;
+
+                hitungDanTampilkanStatistik(databaseAlumni);
+                renderTabel();
+
+                const pesan = encodeURIComponent(buatPesan(row));
+                window.open(`https://wa.me/${hp}?text=${pesan}`, "_blank");
+
+                tampilkanPesan('Lock aktif. Setelah benar-benar kirim WA, klik "Sudah Terkirim".');
+            } catch (err) {
+                console.error(err);
+                tampilkanPesan("Gagal reserve lock: " + err.message);
+            } finally {
+                sedangProses.delete(String(recipientId));
+                renderTabel();
+            }
+        }
+
+        async function konfirmasiKirim(recipientId) {
+            const namaPanitia = pastikanNamaPanitia();
+            if (!namaPanitia) return;
+
+            const pending = getPendingLock(recipientId);
+            if (!pending) {
+                tampilkanPesan("Lock lokal tidak ditemukan atau sudah kadaluarsa.");
+                await muatData();
+                return;
+            }
+
+            sedangProses.add(String(recipientId));
+            renderTabel();
+
+            try {
+                const hasil = await postAction({
+                    action: "confirm",
+                    recipientId: String(recipientId),
+                    token: pending.token,
+                    panitiaName: namaPanitia,
+                    deviceId: deviceId
+                });
+
+                if (!hasil.success) {
+                    tampilkanPesan(hasil.message || hasil.error || "Gagal konfirmasi kirim.");
+                    if (["LOCK_EXPIRED", "TOKEN_INVALID", "NOT_PROCESSING", "ALREADY_SENT"].includes(hasil.code || "")) {
+                        delete pendingLocks[String(recipientId)];
+                        savePendingLocks();
+                    }
+                    await muatData();
+                    return;
+                }
+
+                delete pendingLocks[String(recipientId)];
+                savePendingLocks();
+
+                const row = databaseAlumni.find(r => String(r.Recipient_ID) === String(recipientId));
+                if (row) {
+                    row.Status_WA = "Terkirim";
+                    row.Lock_By = "";
+                    row.Lock_Expire_At = "";
+                    row.Sent_By = hasil.sentBy || namaPanitia;
+                    row.Sent_At = hasil.sentAt || new Date().toISOString();
+                }
+
+                counterSesi = Math.min(counterSesi + 1, LIMIT_SESI);
+                updateProgress();
+                hitungDanTampilkanStatistik(databaseAlumni);
+                renderTabel();
+
+                tampilkanPesan("Status berhasil dikonfirmasi Terkirim.");
+            } catch (err) {
+                console.error(err);
+                tampilkanPesan("Gagal konfirmasi: " + err.message);
+            } finally {
+                sedangProses.delete(String(recipientId));
+                renderTabel();
+            }
+        }
+
+        async function batalkanKirim(recipientId) {
+            const pending = getPendingLock(recipientId);
+            if (!pending) {
+                tampilkanPesan("Lock lokal tidak ditemukan atau sudah kadaluarsa.");
+                await muatData();
+                return;
+            }
+
+            sedangProses.add(String(recipientId));
+            renderTabel();
+
+            try {
+                const hasil = await postAction({
+                    action: "cancel",
+                    recipientId: String(recipientId),
+                    token: pending.token
+                });
+
+                if (!hasil.success) {
+                    tampilkanPesan(hasil.message || hasil.error || "Gagal membatalkan lock.");
+                    if (["LOCK_EXPIRED", "TOKEN_INVALID", "NOT_PROCESSING"].includes(hasil.code || "")) {
+                        delete pendingLocks[String(recipientId)];
+                        savePendingLocks();
+                    }
+                    await muatData();
+                    return;
+                }
+
+                delete pendingLocks[String(recipientId)];
+                savePendingLocks();
+
+                const row = databaseAlumni.find(r => String(r.Recipient_ID) === String(recipientId));
+                if (row) {
+                    row.Status_WA = "Antrean";
+                    row.Lock_By = "";
+                    row.Lock_Expire_At = "";
+                }
+
+                hitungDanTampilkanStatistik(databaseAlumni);
+                renderTabel();
+
+                tampilkanPesan("Lock dibatalkan. Target kembali ke Antrean.");
+            } catch (err) {
+                console.error(err);
+                tampilkanPesan("Gagal cancel: " + err.message);
+            } finally {
+                sedangProses.delete(String(recipientId));
+                renderTabel();
+            }
+        }
+
+        async function perpanjangSemuaLock() {
+            bersihkanPendingKadaluarsa();
+            const ids = Object.keys(pendingLocks);
+            if (ids.length === 0) return;
+
+            for (const recipientId of ids) {
+                const pending = pendingLocks[recipientId];
+                if (!pending?.token) continue;
+
+                try {
+                    const hasil = await postAction({
+                        action: "extend",
+                        recipientId: String(recipientId),
+                        token: pending.token
+                    });
+
+                    if (hasil.success && hasil.expiresAt) {
+                        pendingLocks[recipientId].expiresAt = hasil.expiresAt;
+                        const row = databaseAlumni.find(r => String(r.Recipient_ID) === String(recipientId));
+                        if (row) row.Lock_Expire_At = hasil.expiresAt;
+                    } else if (["LOCK_EXPIRED", "TOKEN_INVALID", "NOT_PROCESSING"].includes(hasil.code || "")) {
+                        delete pendingLocks[recipientId];
+                    }
+                } catch (err) {}
+            }
+
+            savePendingLocks();
+            renderTabel();
+        }
+
+        async function muatDataBackground() {
+            try {
+                bersihkanPendingKadaluarsa();
+                const hasil = await fetchJson(API_URL);
+                if (hasil.error || !Array.isArray(hasil)) return;
+
+                syncPendingDenganServer(hasil);
+                databaseAlumni = urutkanData(hasil);
+                hitungDanTampilkanStatistik(databaseAlumni);
+                renderTabel();
+            } catch (err) {}
         }
 
         function tampilkanDaftar(tipe) {
@@ -522,52 +878,6 @@ https://i.ibb.co.com/HLh8wkdg/undangan-sender.png</textarea>
             modal.classList.remove("flex");
         }
 
-        async function muatDataBackground() {
-            if (kunciKeamanan) return;
-            try {
-                const respon = await fetch(API_URL);
-                const hasil = await respon.json();
-                if (hasil.error || !Array.isArray(hasil)) return;
-
-                let h14 = 0, t14 = 0, h15 = 0, t15 = 0, belum = 0;
-                let adaPerubahan = false;
-
-                hasil.forEach(itemBaru => {
-                    const r14 = normalisasiRSVP(itemBaru.RSVP_14);
-                    const r15 = normalisasiRSVP(itemBaru.RSVP_15);
-
-                    if (r14 === "hadir") h14++; else if (r14 === "tidak") t14++;
-                    if (r15 === "hadir") h15++; else if (r15 === "tidak") t15++;
-                    if (r14 === "belum" && r15 === "belum") belum++;
-
-                    const hpBaru = ambilHP(itemBaru);
-                    const rowLama = databaseAlumni.find(r => ambilHP(r) === hpBaru);
-                    
-                    if (rowLama) {
-                        const statusLama = ambilStatusWA(rowLama).toLowerCase();
-                        const statusBaru = ambilStatusWA(itemBaru).toLowerCase();
-                        if (statusLama !== statusBaru) {
-                            rowLama.Status_WA = statusBaru; 
-                            adaPerubahan = true;
-                        }
-                    }
-                });
-
-                if (adaPerubahan) {
-                    document.getElementById("statHadir14").innerText = h14;
-                    document.getElementById("statTidak14").innerText = t14;
-                    document.getElementById("statHadir15").innerText = h15;
-                    document.getElementById("statTidak15").innerText = t15;
-                    document.getElementById("statBelum").innerText = belum;
-                    
-                    databaseAlumni = urutkanData(databaseAlumni);
-                    renderTabel();
-                }
-            } catch (err) {}
-        }
-
-        setInterval(muatDataBackground, 10000);
-
         function halamanNext() {
             if (posisiData + perHalaman < databaseAlumni.length) {
                 posisiData += perHalaman;
@@ -584,7 +894,15 @@ https://i.ibb.co.com/HLh8wkdg/undangan-sender.png</textarea>
             }
         }
 
-        window.onload = muatData;
+        window.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("deviceInfo").innerText = deviceId;
+            document.getElementById("namaPanitia").value = localStorage.getItem("ikatp_panitia_name") || "";
+            bersihkanPendingKadaluarsa();
+            updateProgress();
+            muatData();
+            setInterval(muatDataBackground, 10000);
+            setInterval(perpanjangSemuaLock, 60000);
+        });
     </script>
 </body>
 </html>
